@@ -1,11 +1,13 @@
-#include <QGuiApplication>
+#include <QtGui/QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <qqmlcontext.h>
+#include "circleprogress.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    qmlRegisterType<CircleGraph>("CircleGraph", 1, 0, "CircleGraph");
 
     QStringList dataList1;
     dataList1.append("Pointer");

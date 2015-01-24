@@ -52,6 +52,7 @@ Item {
 
         case 4:
             cluster.configurableBackground="image/Skin_4.png"
+            console.log(index)
             cluster.configurableBackground_index = 1
             switch(cluster.configurableDial_index)
             {
