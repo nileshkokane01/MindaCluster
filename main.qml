@@ -2,6 +2,7 @@ import QtQuick 2.2
 import QtQuick.Window 2.1
 import QtQuick.Controls 1.1
 import CircleGraph 1.0
+import serial 1.0
 
 ApplicationWindow {
     visible: true
@@ -44,15 +45,22 @@ ApplicationWindow {
         property int skin_9_configurableDial_index:1
         property string skin_9_configurablePointer:"image/Skin_9_RPM_Pointer1.png" // _index:1
         property int configurableBackground_index: 6
+        property bool dummySerialselect:true
 
 
 
 
         function rpmSpeedMeter(){
 
-            rpmMeter.value1 = rpmValue
-            speedoMeter.value = speedValue
+            if(dummySerialselect==false){
+                rpmMeter.value1=w.rpmData
+                speedoMeter.value = w.speedData
+            }
 
+            else{
+                rpmMeter.value1 = rpmValue
+                speedoMeter.value = speedValue
+            }
 
 
             switch(gear)
