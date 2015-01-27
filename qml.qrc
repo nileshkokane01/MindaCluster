@@ -115,7 +115,7 @@
         <file>image/Skin_9_RPM.png</file>
         <file>image/Skin_9_RPM_Pointer1.png</file>
         <file>image/Skin_9_Speedo.png</file>
-        <file>image/Skin_9_TG &amp; FG.png</file>
+        <file>image/Skin_9_FG_TG.png</file>
         <file>image/Skin_9_RPM_Black_Patch.png</file>
         <file>image/Skin_9_Speedo_Blank_Patch.png</file>
         <file>image/Skin_9_Temp_Blank_Patch.png</file>
@@ -129,5 +129,13 @@
         <file>image/Skin_9_RPM_Pointer4.png</file>
         <file>image/Skin_9_RPM_Pointer5.png</file>
         <file>image/car.png</file>
+        <file>image/Skin_9_FG_TG2.png</file>
+        <file>image/Skin_9_RPM2.png</file>
+        <file>image/Skin_9_Speedo2.png</file>
+        <file>image/Skin_3_FG_Dial.png</file>
+        <file>image/Skin_3_Graphic.png</file>
+        <file>image/Skin_3_RPM_Dial.png</file>
+        <file>image/Skin_3_Speedo_Dial.png</file>
+        <file>image/Skin_3_TG_Dial.png</file>
     </qresource>
 </RCC>

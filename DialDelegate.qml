@@ -33,6 +33,10 @@ Item {
                 cluster.configurableDial="image/Skin_9_Speedo1.png"
                 cluster.skin_9_configurableDial_index = 2
                 break;
+           case 2:
+                  cluster.configurableDial="image/Skin_9_Speedo2.png"
+                  cluster.skin_9_configurableDial_index = 3
+                  break;
             }
             break;
 

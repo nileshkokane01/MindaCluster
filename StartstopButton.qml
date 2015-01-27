@@ -9,8 +9,8 @@ FocusScope {
         id: flipable
         width: 50
         height: 64
-        x: switch(cluster.configurableBackground_index){case 9:645;break;case 12:645;break;default:610}
-        y: switch(cluster.configurableBackground_index){case 9:465;break;case 12:390;break;default:300}
+        x: switch(cluster.configurableBackground_index){case 3:645;break;case 9:645;break;case 12:645;break;case 13:645;break;default:610}
+        y: switch(cluster.configurableBackground_index){case 3:400;break;case 9:465;break;case 12:390;break;case 13:380;break;default:300}
         scale:0.6
 
         front: Image { source: "image/Engine_start_stop_inactive.png"; anchors.centerIn: parent }

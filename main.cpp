@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
 
 
     QStringList dataList1;
-    dataList1.append("Pointer");
     dataList1.append("Skin");
+    dataList1.append("Pointer");
     dataList1.append("Dial");
     dataList1.append("Calander");
     dataList1.append("Rear Camera");

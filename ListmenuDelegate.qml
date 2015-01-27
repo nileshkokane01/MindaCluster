@@ -29,10 +29,10 @@ Item {
     Keys.onSpacePressed: {
          switch(index){
          case 0:
-             viewPointeroption.focus=true
+             viewBackgroundoption.focus=true
              break;
          case 1:
-             viewBackgroundoption.focus=true
+             viewPointeroption.focus=true
              break;
          case 2:
              viewDialoption.focus=true

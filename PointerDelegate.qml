@@ -16,7 +16,8 @@ Item {
     Image{
         id:pointerImage
         anchors.centerIn:pointerRec
-        source:modelData
+        source:sourcee //modelData
+        scale:scalee
     }
 
     Keys.onSpacePressed: {
