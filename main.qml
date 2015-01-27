@@ -1316,7 +1316,7 @@ ApplicationWindow {
                 anchors.fill:speed_inactive
                 z:0
                 scale:0.8
-                opacity:(cluster.configurableBackground_index==6 ||cluster.configurableBackground_index==1 ||cluster.configurableBackground_index==7)? 1:0
+                opacity:((cluster.configurableBackground_index==6 ||cluster.configurableBackground_index==1 ||cluster.configurableBackground_index==7) &&(cluster.configurableDial_index == 3))? 1:0
                 startAngle:2100
                 endValue: cluster.fuelDummy
                 color: "yellow"
@@ -1417,7 +1417,7 @@ ApplicationWindow {
                 anchors.fill:rpm_inactive
                 z:0
                 scale:0.8
-                opacity:(cluster.configurableBackground_index==6 ||cluster.configurableBackground_index==1 ||cluster.configurableBackground_index==7)? 1:0
+                opacity:((cluster.configurableBackground_index==6 ||cluster.configurableBackground_index==1 ||cluster.configurableBackground_index==7) && (cluster.configurableDial_index == 3))? 1:0
                 startAngle:900
                 spanAngle:-1728
                 endValue: -(30-cluster.fuelDummy)
