@@ -6,7 +6,7 @@ Item {
 
     Rectangle {
         id: backgroundRec
-        anchors.centerIn: parent; width: 270; height: 170
+        anchors.centerIn: parent; width: 245; height: 170
         color: "transparent"
         antialiasing: true
         radius: 10
@@ -36,6 +36,8 @@ Item {
         case 1:
             cluster.configurableBackground=""
             cluster.configurableBackground_index = 12
+            cluster.skin_12_configurablePointer_index = 1;
+            cluster.skin_3_configurableDial_index = 1
             rpm_active.opacity   = cluster.startFlag==true? 0:0
             speed_active.opacity = cluster.startFlag==true? 0:0
             digitalSpeed.opacity   = cluster.startFlag==true? 0:0
@@ -44,13 +46,19 @@ Item {
         case 2:
             cluster.configurableBackground=""
             cluster.configurableBackground_index = 3
-            digitalSpeed.opacity   = cluster.startFlag==true? 0:0
+            cluster.skin_12_configurablePointer_index = 1;
+            cluster.skin_3_configurableDial_index = 1
+            digitalSpeed.opacity   = cluster.startFlag==true? 0:0            
+            rpm_active.opacity   = cluster.startFlag==true? 0:0
+            speed_active.opacity = cluster.startFlag==true? 0:0
             break;
 
         case 3:
             cluster.configurableBackground="image/Skin_16.png"
             cluster.configurableBackground_index = 4
-            digitalSpeed.opacity   = cluster.startFlag==true? 0:0
+            digitalSpeed.opacity   = cluster.startFlag==true? 0:0            
+            rpm_active.opacity   = cluster.startFlag==true? 0:0
+            speed_active.opacity = cluster.startFlag==true? 0:0
             break;
 
         case 4:

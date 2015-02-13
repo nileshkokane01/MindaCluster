@@ -5,7 +5,7 @@ FocusScope {
 
     ListView {
         id: backgroundView
-        x:50;width:300;height:300
+        x:50;width:370;height:370
         focus: true
         orientation: ListView.Horizontal
         model:backgroundOption; cacheBuffer: 100

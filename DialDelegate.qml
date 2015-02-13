@@ -23,6 +23,23 @@ Item {
     Keys.onSpacePressed: {
 
         switch(cluster.configurableBackground_index){
+
+
+        case 3:
+            switch(index){
+            case 0:
+                cluster.configurableDial="image/Skin_3_Speedo_Dial.png"
+                cluster.skin_3_configurableDial_index = 1
+                cluster.skin_12_configurablePointer_index = 1;
+                break;
+            case 1:
+                cluster.configurableDial="image/Skin_3_Speedo_Dial2.png"
+                cluster.skin_3_configurableDial_index = 2
+                cluster.skin_12_configurablePointer_index = 3;
+                break;
+            }
+            break;
+
         case 9:
             switch(index){
             case 0:
@@ -39,6 +56,23 @@ Item {
                   break;
             }
             break;
+
+        case 12:
+            switch(index){
+            case 0:
+                cluster.configurableDial="image/Skin_9_Speedo.png"
+                cluster.skin_Blank_configurableDial_index = 1
+                cluster.skin_12_configurablePointer_index = 1;
+                break;
+            case 1:
+                cluster.configurableDial="image/Skin_9_Speedo1.png"
+                cluster.skin_Blank_configurableDial_index = 2
+                cluster.skin_12_configurablePointer_index = 2;
+                break;
+            }
+            break;
+
+
 
         default:
             switch(index){

@@ -42,6 +42,38 @@ Item {
                    break;
             }
             break;
+        case 12:
+            switch(index){
+            case 0:
+                   cluster.skin_12_configurablePointer="image/Skin_9_RPM_Pointer1.png"
+                   cluster.skin_12_configurablePointer_index = 1;
+                   break;
+            case 1:
+                   cluster.skin_12_configurablePointer="image/Skin_9_RPM_Pointer2.png"
+                   cluster.skin_12_configurablePointer_index = 2;
+                   break;
+            case 2:
+                   cluster.skin_12_configurablePointer="image/Skin_9_RPM_Pointer3.png"
+                   cluster.skin_12_configurablePointer_index = 3;
+                   break;
+            }
+            break;
+        case 3:
+            switch(index){
+            case 0:
+                   cluster.skin_12_configurablePointer="image/Skin_9_RPM_Pointer1.png"
+                   cluster.skin_12_configurablePointer_index = 1;
+                   break;
+            case 1:
+                   cluster.skin_12_configurablePointer="image/Skin_9_RPM_Pointer2.png"
+                   cluster.skin_12_configurablePointer_index = 2;
+                   break;
+            case 2:
+                   cluster.skin_12_configurablePointer="image/Skin_9_RPM_Pointer3.png"
+                   cluster.skin_12_configurablePointer_index = 3;
+                   break;
+            }
+            break;
 
         default:
         switch(index){
@@ -64,9 +96,12 @@ Item {
                 cluster.configurablePointer="image/Pointer6.png"
             break;
         case 6:
-                cluster.configurablePointer="image/Skin_14_Speedo_RPM_Pointer.png"
+                cluster.configurablePointer="image/Pointer7.png"
             break;
         case 7:
+                cluster.configurablePointer="image/Skin_14_Speedo_RPM_Pointer.png"
+            break;
+        case 8:
 
             break;
         }

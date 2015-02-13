@@ -84,7 +84,7 @@ void SerialLog::getPortInfo(){
         QStringList list;
         description = info.description();
         manufacturer = info.manufacturer();
-        serialNumber = info.serialNumber();
+        //serialNumber = info.serialNumber();
         list << info.portName()
              << (!description.isEmpty() ? description : blankString)
              << (!manufacturer.isEmpty() ? manufacturer : blankString)

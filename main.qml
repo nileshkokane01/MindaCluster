@@ -12,7 +12,7 @@ ApplicationWindow {
 
     Rectangle {
         id: cluster
-        width:1280; height: 480;y:100
+        width:1280; height: 480;y:100       
         radius: switch(cluster.configurableBackground_index){case 3:90;break;case 9:90;break;case 12:90;break;default:0}
         border.color: switch(cluster.configurableBackground_index){case 3:"white";break;case 9:"white";break;case 12:"white";break;default:""}
         border.width:switch(cluster.configurableBackground_index){case 3:10;break;case 9:10;break;case 12:10;break;default:0}
@@ -38,12 +38,16 @@ ApplicationWindow {
         property bool brakeFlag: false
 
 
-        property string configurablePointer:"image/Pointer5.png"
-        property string configurableBackground:"" //"image/Skin_4.png"
+        property string configurablePointer:"image/Pointer6.png"
+        property string configurableBackground:""//"image/Skin_4.png"
         property string configurableDial:"image/original Speedo.png"
         property int configurableDial_index:3
+        property int skin_3_configurableDial_index:1
         property int skin_9_configurableDial_index:1
-        property string skin_9_configurablePointer:"image/Skin_9_RPM_Pointer1.png" // _index:1
+        property int skin_Blank_configurableDial_index:1
+        property string skin_9_configurablePointer:"image/Skin_9_RPM_Pointer1.png"
+        property string skin_12_configurablePointer:"image/Skin_9_RPM_Pointer1.png"
+        property int skin_12_configurablePointer_index:1
         property int configurableBackground_index: 9
         property bool dummySerialselect:true
 
@@ -1029,12 +1033,20 @@ ApplicationWindow {
                 source: "image/Skin_Blank_RPM_Dial.png"
                 states:[
                     State{
-                        name: "Skin_Blank_RPM_Dial1"; when: ((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 13))
+                        name: "Skin_Blank_RPM_Dial1"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index==1)||(cluster.configurableBackground_index == 13))
                         PropertyChanges { target: skin_Blank_RPM_dail; source:"image/Skin_Blank_RPM_Dial.png"}
                     },
                     State{
-                        name: "Skin_3_RPM_Dial1"; when: cluster.configurableBackground_index == 3
+                        name: "Skin_Blank_RPM_Dial12"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index==2))
+                        PropertyChanges { target: skin_Blank_RPM_dail; source:"image/Skin_Blank_RPM_Dial2.png"}
+                    },
+                    State{
+                        name: "Skin_3_RPM_Dial1"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index==1))
                         PropertyChanges { target: skin_Blank_RPM_dail; source:"image/Skin_3_RPM_Dial.png"}
+                    },
+                    State{
+                        name: "Skin_3_RPM_Dial12"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index==2))
+                        PropertyChanges { target: skin_Blank_RPM_dail; source:"image/Skin_3_RPM_Dial2.png"}
                     }
                 ]
 
@@ -1047,7 +1059,21 @@ ApplicationWindow {
                     z: 2
                     scale:0.9
                     opacity: switch(cluster.configurableBackground_index){case 3:1;break;case 12:1;break;case 13:1;break;default:0}
-                    source: "image/Skin_Blank_Speedo_RPM_Pointer.png"
+                    source: "image/Skin_Blank_Speedo_RPM_Pointer.png" //
+                    states:[
+                        State{
+                            name: "skin_Blank_Speedo_pointer1"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==1))
+                            PropertyChanges { target: skin_Blank_RPM_pointer; source:"image/Skin_Blank_Speedo_RPM_Pointer.png"}
+                        },
+                        State{
+                            name: "skin_Blank_Speedo_pointer2"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==2))
+                            PropertyChanges { target: skin_Blank_RPM_pointer; source:"image/Skin_Blank_Speedo_RPM_Pointer2.png"}
+                        },
+                        State{
+                            name: "skin_Blank_Speedo_pointer3"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==3))
+                            PropertyChanges { target: skin_Blank_RPM_pointer; source:"image/Skin_Blank_Speedo_RPM_Pointer3.png"}
+                        }
+                    ]
                     transform: Rotation  {
                         id: skin_Blank_RPM_pointer_Rotation
                         origin.x: 61
@@ -1084,12 +1110,20 @@ ApplicationWindow {
                 source: "image/Skin_Blank_Graphic.png"
                 states:[
                     State{
-                        name: "Skin_Blank_Graphic"; when: ((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 13))
+                        name: "Skin_Blank_Graphic"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 1)||(cluster.configurableBackground_index == 13))
                         PropertyChanges { target: skin_Blank_Graphics; source:"image/Skin_Blank_Graphic.png"}
                     },
                     State{
-                        name: "Skin_3_Graphic"; when: cluster.configurableBackground_index == 3
+                        name: "Skin_Blank_Graphic2"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_Graphics; source:"image/Skin_Blank_Graphic2.png"}
+                    },
+                    State{
+                        name: "Skin_3_Graphic"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 1))
                         PropertyChanges { target: skin_Blank_Graphics; source:"image/Skin_3_Graphic.png"}
+                    },
+                    State{
+                        name: "Skin_3_Graphic2"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_Graphics; source:"image/Skin_3_Graphic2.png"}
                     }
                 ]
 
@@ -1108,12 +1142,20 @@ ApplicationWindow {
                 source: "image/Skin_Blank_Speedo_Dial.png"
                 states:[
                     State{
-                        name: "Skin_Blank_Speedo_Dial1"; when: ((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 13))
+                        name: "Skin_Blank_Speedo_Dial1"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 1)||(cluster.configurableBackground_index == 13))
                         PropertyChanges { target: skin_Blank_Speedo_dail; source:"image/Skin_Blank_Speedo_Dial.png"}
                     },
                     State{
-                        name: "Skin_3_Speedo_Dial1"; when: cluster.configurableBackground_index == 3
+                        name: "Skin_Blank_Speedo_Dial12"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_Speedo_dail; source:"image/Skin_Blank_Speedo_Dial2.png"}
+                    },
+                    State{
+                        name: "Skin_3_Speedo_Dial1"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 1))
                         PropertyChanges { target: skin_Blank_Speedo_dail; source:"image/Skin_3_Speedo_Dial.png"}
+                    },
+                    State{
+                        name: "Skin_3_Speedo_Dial2"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_Speedo_dail; source:"image/Skin_3_Speedo_Dial2.png"}
                     }
                 ]
 
@@ -1127,6 +1169,20 @@ ApplicationWindow {
                     scale:0.9
                     opacity: switch(cluster.configurableBackground_index){case 3:1;break;case 12:1;break;case 13:1;break;default:0}
                     source: "image/Skin_Blank_Speedo_RPM_Pointer.png"
+                    states:[
+                        State{
+                            name: "skin_Blank_Speedo_pointer1"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==1))
+                            PropertyChanges { target: skin_Blank_Speedo_pointer; source:"image/Skin_Blank_Speedo_RPM_Pointer.png"}
+                        },
+                        State{
+                            name: "skin_Blank_Speedo_pointer2"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==2))
+                            PropertyChanges { target: skin_Blank_Speedo_pointer; source:"image/Skin_Blank_Speedo_RPM_Pointer2.png"}
+                        },
+                        State{
+                            name: "skin_Blank_Speedo_pointer3"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==3))
+                            PropertyChanges { target: skin_Blank_Speedo_pointer; source:"image/Skin_Blank_Speedo_RPM_Pointer3.png"}
+                        }
+                    ]
                     transform: Rotation  {
                         id: skin_Blank_Speedo_pointer_Rotation
                         origin.x: 61
@@ -1162,12 +1218,20 @@ ApplicationWindow {
                 source: "image/Skin_Blank_FG_Dial.png"
                 states:[
                     State{
-                        name: "Skin_Blank_FG_Dial"; when: ((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 13))
+                        name: "Skin_Blank_FG_Dial"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 1)||(cluster.configurableBackground_index == 13))
                         PropertyChanges { target: skin_Blank_FG_dail; source:"image/Skin_Blank_FG_Dial.png"}
                     },
                     State{
-                        name: "Skin_3_FG_Dial"; when: cluster.configurableBackground_index == 3
+                        name: "Skin_Blank_FG_Dial2"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_FG_dail; source:"image/Skin_Blank_FG_Dial2.png"}
+                    },
+                    State{
+                        name: "Skin_3_FG_Dial"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 1))
                         PropertyChanges { target: skin_Blank_FG_dail; source:"image/Skin_3_FG_Dial.png"}
+                    },
+                    State{
+                        name: "Skin_3_FG_Dial2"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_FG_dail; source:"image/Skin_3_FG_Dial2.png"}
                     }
                 ]
 
@@ -1181,6 +1245,20 @@ ApplicationWindow {
                     scale:1
                     opacity: switch(cluster.configurableBackground_index){case 3:1;break;case 12:1;break;case 13:1;break;default:0}
                     source: "image/Skin_Blank_Gauge_Pointer.png"
+                    states:[
+                        State{
+                            name: "skin_Blank_FG_pointer1"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==1))
+                            PropertyChanges { target: skin_Blank_FG_pointer; source:"image/Skin_Blank_Gauge_Pointer.png"}
+                        },
+                        State{
+                            name: "skin_Blank_FG_pointer2"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==2))
+                            PropertyChanges { target: skin_Blank_FG_pointer; source:"image/Skin_Blank_Gauge_Pointer2.png"}
+                        },
+                        State{
+                            name: "skin_Blank_FG_pointer3"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==3))
+                            PropertyChanges { target: skin_Blank_FG_pointer; source:"image/Skin_Blank_Gauge_Pointer3.png"}
+                        }
+                    ]
                     transform: Rotation  {
                         id: skin_Blank_FG_pointer_Rotation
                         origin.x: 20
@@ -1208,12 +1286,20 @@ ApplicationWindow {
                 source: "image/Skin_Blank_TG_Dial.png"
                 states:[
                     State{
-                        name: "Skin_Blank_TG_Dial"; when: ((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 13))
+                        name: "Skin_Blank_TG_Dial"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 1)||(cluster.configurableBackground_index == 13))
                         PropertyChanges { target: skin_Blank_TG_dail; source:"image/Skin_Blank_TG_Dial.png"}
                     },
                     State{
-                        name: "Skin_3_TG_Dial"; when: cluster.configurableBackground_index == 3
+                        name: "Skin_Blank_TG_Dial2"; when: ((cluster.configurableBackground_index == 12)&&(cluster.skin_Blank_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_TG_dail; source:"image/Skin_Blank_TG_Dial2.png"}
+                    },
+                    State{
+                        name: "Skin_3_TG_Dial"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 1))
                         PropertyChanges { target: skin_Blank_TG_dail; source:"image/Skin_3_TG_Dial.png"}
+                    },
+                    State{
+                        name: "Skin_3_TG_Dial2"; when: ((cluster.configurableBackground_index == 3)&&(cluster.skin_3_configurableDial_index == 2))
+                        PropertyChanges { target: skin_Blank_TG_dail; source:"image/Skin_3_TG_Dial2.png"}
                     }
                 ]
 
@@ -1227,6 +1313,20 @@ ApplicationWindow {
                     scale:1
                     opacity:switch(cluster.configurableBackground_index){case 3:1;break;case 12:1;break;case 13:1;break;default:0}
                     source: "image/Skin_Blank_Gauge_Pointer.png"
+                    states:[
+                        State{
+                            name: "skin_Blank_TG_pointer1"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==1))
+                            PropertyChanges { target: skin_Blank_TG_pointer; source:"image/Skin_Blank_Gauge_Pointer.png"}
+                        },
+                        State{
+                            name: "skin_Blank_TG_pointer2"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==2))
+                            PropertyChanges { target: skin_Blank_TG_pointer; source:"image/Skin_Blank_Gauge_Pointer2.png"}
+                        },
+                        State{
+                            name: "skin_Blank_TG_pointer3"; when: (((cluster.configurableBackground_index == 12)||(cluster.configurableBackground_index == 3))&&(cluster.skin_12_configurablePointer_index==3))
+                            PropertyChanges { target: skin_Blank_TG_pointer; source:"image/Skin_Blank_Gauge_Pointer3.png"}
+                        }
+                    ]
                     transform: Rotation  {
                         id: skin_Blank_TG_pointer_Rotation
                         origin.x: 20
@@ -1338,8 +1438,8 @@ ApplicationWindow {
 
             Image  {
                 id: needle1
-                x: switch(cluster.configurableBackground_index){case 2:188;break;case 3:188;break;case 4:188;break;default:switch(cluster.configurableDial_index){case 1:127;break;case 2:124;break;case 3:112;break;}}
-                y: switch(cluster.configurableBackground_index){case 2:111;break;case 3:111;break;case 4:111;break;default:switch(cluster.configurableDial_index){case 1:72;break;case 2:91;break;case 3:90;break;}}
+                x: switch(cluster.configurableBackground_index){case 2:188;break;case 3:188;break;case 4:188;break;default:switch(cluster.configurableDial_index){case 1:127;break;case 2:124;break;case 3:112;break;}}//73
+                y: switch(cluster.configurableBackground_index){case 2:111;break;case 3:111;break;case 4:111;break;default:switch(cluster.configurableDial_index){case 1:72;break;case 2:91;break;case 3:90;break;}}//-14
                 clip: true
                 opacity: switch(cluster.configurableBackground_index){case 3:0;break;case 4:0;break;case 5:0;break;case 8:0;break;case 9:0;break;case 12:0;break;case 13:0;break;default:1}
                 z: 4
@@ -1440,8 +1540,8 @@ ApplicationWindow {
 
             Image  {
                 id: needle
-                x: switch(cluster.configurableBackground_index){case 2:55;break;case 3:55;break;case 4:55;break;default:switch(cluster.configurableDial_index){case 1:74;break;case 2:102;break;case 3:91;break;}}
-                y: switch(cluster.configurableBackground_index){case 2:99;break;case 3:99;break;case 4:99;break;default:switch(cluster.configurableDial_index){case 1:64;break;case 2:84;break;case 3:82;break;}}
+                x: switch(cluster.configurableBackground_index){case 2:55;break;case 3:55;break;case 4:55;break;default:switch(cluster.configurableDial_index){case 1:74;break;case 2:102;break;case 3:91;break;}}//51
+                y: switch(cluster.configurableBackground_index){case 2:99;break;case 3:99;break;case 4:99;break;default:switch(cluster.configurableDial_index){case 1:64;break;case 2:84;break;case 3:82;break;}}//-22
                 z:4
                 clip: true
                 scale: 1
@@ -1450,8 +1550,8 @@ ApplicationWindow {
                 source: cluster.configurablePointer
                 transform: Rotation  {
                     id: needleRotation
-                    origin.x: 19 //89 //5
-                    origin.y: 80 //369 //65
+                    origin.x: 19 //5
+                    origin.y: 80 //65
                     angle:switch(cluster.configurableDial_index)
                           {
                           case 1:(Math.min(Math.max(-180, rpmMeter.value1*2.6 - 180),150));
@@ -1462,8 +1562,8 @@ ApplicationWindow {
                               break;
                           }
                     /**/
-                    Behavior on angle  {
-                        SpringAnimation  {
+                    Behavior on angle{
+                        SpringAnimation{
                             spring: 1.4
                             damping: .15
                         }
@@ -1582,7 +1682,8 @@ ApplicationWindow {
             }
 
             BackgroundView{
-                id:viewBackgroundoption;width:350;height:350;x:1300;y:100;z:3
+                //id:viewBackgroundoption;width:350;height:350;x:1300;y:100;z:3
+                id:viewBackgroundoption;width:370;height:370;x:1300;y:100;z:3
 
             }
 
@@ -1697,9 +1798,9 @@ ApplicationWindow {
             NumberAnimation { target:rpm_inactive;  property:"scale";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:1.40;break;default:1.2;break;}}duration: 500}
             NumberAnimation { target:rpm_inactive;  property:"x";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:rpm_inactive.x-145;break;default:rpm_inactive.x-175;break;}}duration: 500 }
             NumberAnimation { target:rpm_inactive;  property:"y";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:rpm_inactive.y-2;break;default:rpm_inactive.y-30;break;}}duration: 500 }
-            NumberAnimation { target:needle;        property:"x"; to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:needle.x-152;break;case 2:needle.x-179;break;case 3:needle.x-175;break;}}duration: 500}
-            NumberAnimation { target:needle;        property:"y"; to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:needle.y-20;break;case 2:needle.y-30;break;case 3:needle.y-32;break;}}duration: 500}
-            NumberAnimation { target:needle;        property:"scale"; to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;}}duration: 500}
+            NumberAnimation { target:needle;        property:"x"; to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:needle.x-152;break;case 2:needle.x-179;break;case 3:needle.x-177;break;}}duration: 500}//-178
+            NumberAnimation { target:needle;        property:"y"; to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:needle.y-20;break;case 2:needle.y-30;break;case 3:needle.y-32;break;}}duration: 500}//-32
+            NumberAnimation { target:needle;        property:"scale"; to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;case 3:1.2;break;}}duration: 500}
 
             //NumberAnimation { target:rpmOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:rpmOverlay.x-155;break;case 2:rpmOverlay.x-179;break;}duration: 500}
             //NumberAnimation { target:rpmOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:rpmOverlay.y-20;break;case 2:rpmOverlay.y-30;break;}duration: 500}
@@ -1712,9 +1813,9 @@ ApplicationWindow {
             NumberAnimation { target:speed_inactive;    property:"scale";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:1.40;break;default:1.2;break;}}duration: 500 }
             NumberAnimation { target:speed_inactive;    property:"x";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:speed_inactive.x+175;break;default:speed_inactive.x+195;break;}}duration: 500 }
             NumberAnimation { target:speed_inactive;    property:"y";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:speed_inactive.y-2;break;default:speed_inactive.y-30;break;}}duration: 500 }
-            NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:needle1.x+182;break;case 2:needle1.x+195;break;case 3:needle1.x+195;break;}}duration: 500}
-            NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:needle1.y-20;break;case 2:needle1.y-30;break;case 3:needle1.y-30;break;}}duration: 500}
-            NumberAnimation { target:needle1;           property:"scale";to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;}}duration: 500}
+            NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:needle1.x+182;break;case 2:needle1.x+195;break;case 3:needle1.x+195;break;}}duration: 500} //+193
+            NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:needle1.y-20;break;case 2:needle1.y-30;break;case 3:needle1.y-30;break;}}duration: 500} //-38
+            NumberAnimation { target:needle1;           property:"scale";to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;case 3:1.2;break;}}duration: 500}
             //NumberAnimation { target:speedOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:needle1.x+173;break;case 2:speedOverlay.x+195;break;}duration: 500}
             //NumberAnimation { target:speedOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:needle1.y+32;break;case 2:speedOverlay.y-30;break;}duration: 500}
             //NumberAnimation { target:speedOverlay; property: "scale"; to:switch(cluster.configurableDial_index){case 1:1.5;break;case 2:1.2;break;}duration: 500}
@@ -1772,8 +1873,8 @@ ApplicationWindow {
             NumberAnimation { target:rpm_inactive;  property:"y";to:20;         duration: 500 }
             NumberAnimation { target:rpm_inactive;  property:"x";to: -30;       duration: 500 }
             NumberAnimation { target:rpm_inactive;  property:"scale";to:1;      duration: 500 }
-            NumberAnimation { target:needle;        property:"x";to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:74;break;case 2:102;break;case 3:91;break;}}duration: 500}
-            NumberAnimation { target:needle;        property:"y";to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:64;break;case 2:84; break;case 3:82;break;}}duration: 500}
+            NumberAnimation { target:needle;        property:"x";to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:74;break;case 2:102;break;case 3:91;break;}}duration: 500}//51
+            NumberAnimation { target:needle;        property:"y";to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:64;break;case 2:84; break;case 3:82;break;}}duration: 500}//-22
             NumberAnimation { target:needle;        property:"scale"; to:1;     duration: 500}
 
             NumberAnimation { target:speed_active;      property:"x";to: 695;       duration: 500 }
@@ -1783,8 +1884,8 @@ ApplicationWindow {
             NumberAnimation { target:speed_inactive;    property:"x";to: -9;        duration: 500 }
             NumberAnimation { target:speed_inactive;    property:"y";to: 28;        duration: 500 }
             NumberAnimation { target:speed_inactive;    property:"scale";to:1;      duration: 500 }
-            NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:127;break;case 2:124;break;case 3:112;break;}}duration: 500}
-            NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:72; break;case 2:91; break;case 3:90; break;}}duration: 500}
+            NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:127;break;case 2:124;break;case 3:112;break;}}duration: 500}//73
+            NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:72; break;case 2:91; break;case 3:90; break;}}duration: 500}//-14
             NumberAnimation { target:needle1;           property:"scale"; to:1;     duration: 500 }
 
 

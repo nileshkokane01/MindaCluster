@@ -103,8 +103,6 @@
         <file>image/Skin_15.png</file>
         <file>image/Skin_16.png</file>
         <file>image/Original RPM.png</file>
-        <file>image/Skin_14_Gauge_Pointer.png</file>
-        <file>image/Skin_14_Speedo_RPM_Pointer.png</file>
         <file>image/Skin_11.png</file>
         <file>image/Skin_Blank_FG_Dial.png</file>
         <file>image/Skin_Blank_Graphic.png</file>
@@ -137,5 +135,20 @@
         <file>image/Skin_3_RPM_Dial.png</file>
         <file>image/Skin_3_Speedo_Dial.png</file>
         <file>image/Skin_3_TG_Dial.png</file>
+        <file>image/Skin_Blank_FG_Dial2.png</file>
+        <file>image/Skin_Blank_Graphic2.png</file>
+        <file>image/Skin_Blank_RPM_Dial2.png</file>
+        <file>image/Skin_Blank_Speedo_Dial2.png</file>
+        <file>image/Skin_Blank_TG_Dial2.png</file>
+        <file>image/Pointer7.png</file>
+        <file>image/Skin_3_FG_Dial2.png</file>
+        <file>image/Skin_3_RPM_Dial2.png</file>
+        <file>image/Skin_3_Speedo_Dial2.png</file>
+        <file>image/Skin_3_TG_Dial2.png</file>
+        <file>image/Skin_3_Graphic2.png</file>
+        <file>image/Skin_Blank_Gauge_Pointer2.png</file>
+        <file>image/Skin_Blank_Gauge_Pointer3.png</file>
+        <file>image/Skin_Blank_Speedo_RPM_Pointer2.png</file>
+        <file>image/Skin_Blank_Speedo_RPM_Pointer3.png</file>
     </qresource>
 </RCC>

@@ -8,7 +8,7 @@ FocusScope {
         x:50;width:300;height:300
         focus: true
         orientation: ListView.Horizontal
-        model:switch(cluster.configurableBackground_index){case 9:skin_9_pointerOption;break;case 3:skin_3_pointerOption;break;case 12:skin_12_pointerOption;break;default:pointerOption;}
+        model:switch(cluster.configurableBackground_index){case 9:skin_9_pointerOption;break;case 3:skin_12_pointerOption;break;case 12:skin_12_pointerOption;break;default:pointerOption;}
         cacheBuffer: 100
         delegate: PointerDelegate {}
 
@@ -37,10 +37,15 @@ FocusScope {
             scalee:1
         }
         ListElement{
-            source:"image/Pointer5.png"
+            sourcee:"image/Pointer5.png"
+            scalee:1
         }
         ListElement{
             sourcee:"image/Pointer6.png"
+            scalee:1
+        }
+        ListElement{
+            sourcee:"image/Pointer7.png"
             scalee:1
         }
         ListElement{
@@ -74,20 +79,36 @@ FocusScope {
         }
     }
 
-    ListModel{
+   /* ListModel{
         id:skin_3_pointerOption
 
         ListElement{
             sourcee:"image/Skin_Blank_Speedo_RPM_Pointer.png"
             scalee:0.3
         }
-    }
+        ListElement{
+            sourcee:"image/Skin_Blank_Speedo_RPM_Pointer2.png"
+            scalee:0.3
+        }
+        ListElement{
+            sourcee:"image/Skin_Blank_Speedo_RPM_Pointer3.png"
+            scalee:0.3
+        }
+    }*/
 
     ListModel{
         id:skin_12_pointerOption
 
         ListElement{
             sourcee:"image/Skin_Blank_Speedo_RPM_Pointer.png"
+            scalee:0.3
+        }
+        ListElement{
+            sourcee:"image/Skin_Blank_Speedo_RPM_Pointer2.png"
+            scalee:0.3
+        }
+        ListElement{
+            sourcee:"image/Skin_Blank_Speedo_RPM_Pointer3.png"
             scalee:0.3
         }
     }

@@ -58,6 +58,10 @@ FocusScope {
                 sourcee:"image/Skin_3_Speedo_Dial.png"
                 scalee:0.2
             }
+            ListElement{
+                sourcee:"image/Skin_3_Speedo_Dial2.png"
+                scalee:0.2
+            }
 
         }
     ListModel{
@@ -65,6 +69,9 @@ FocusScope {
 
             ListElement{
                 sourcee:"image/Skin_Blank_Speedo_Dial.png"
+                scalee:0.2
+            }ListElement{
+                sourcee:"image/Skin_Blank_Speedo_Dial2.png"
                 scalee:0.2
             }
 
