@@ -8,15 +8,15 @@ ApplicationWindow {
     visible: true
     width: 1280
     height: 480
-    //visibility:Window.FullScreen
+    visibility:Window.FullScreen
 
     Rectangle {
         id: cluster
-        width:1280; height: 480;y:100       
-        radius: switch(cluster.configurableBackground_index){case 3:90;break;case 9:90;break;case 12:90;break;default:0}
+        width:1280; height: 480;
+        radius: switch(cluster.configurableBackground_index){case 3:0;break;case 9:0;break;case 12:0;break;default:0}
         border.color: switch(cluster.configurableBackground_index){case 3:"white";break;case 9:"white";break;case 12:"white";break;default:""}
-        border.width:switch(cluster.configurableBackground_index){case 3:10;break;case 9:10;break;case 12:10;break;default:0}
-        color: switch(cluster.configurableBackground_index){case 1:"white";break;case 13:"white";break;default:"black"}
+        border.width:0 //switch(cluster.configurableBackground_index){case 3:10;break;case 9:10;break;case 12:10;break;default:0}
+        color: switch(cluster.configurableBackground_index){case 1:"grey";break;case 13:"grey";break;default:"black"}
 
 
         property bool startFlag: false
@@ -1634,7 +1634,7 @@ ApplicationWindow {
             Rectangle {
                 id: menuOption
                 width: 120; height: 30;
-                x:560;y:120;
+                x:600;y:120;  //560
                 color: "grey"
                 anchors.topMargin: 3
                 antialiasing: true

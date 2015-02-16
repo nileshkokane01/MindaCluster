@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'serial.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.1)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.2.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'serial.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.1. It"
+#error "This file was generated using the moc from 5.2.1. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,12 +20,12 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_SerialLog_t {
     QByteArrayData data[13];
-    char stringdata[131];
+    char stringdata[132];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_SerialLog_t, stringdata) + ofs \
-        - idx * sizeof(QByteArrayData)) \
+    offsetof(qt_meta_stringdata_SerialLog_t, stringdata) + ofs \
+        - idx * sizeof(QByteArrayData) \
     )
 static const qt_meta_stringdata_SerialLog_t qt_meta_stringdata_SerialLog = {
     {
@@ -46,7 +46,7 @@ QT_MOC_LITERAL(12, 123, 7)
     "SerialLog\0getRpmData\0\0data\0getSpeedData\0"
     "data1\0openSerialLog\0closeSerialLog\0"
     "readSerialLog\0setspeedData\0setrpmData\0"
-    "speedData\0rpmData"
+    "speedData\0rpmData\0"
 };
 #undef QT_MOC_LITERAL
 
@@ -64,15 +64,15 @@ static const uint qt_meta_data_SerialLog[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   49,    2, 0x06 /* Public */,
-       4,    1,   52,    2, 0x06 /* Public */,
+       1,    1,   49,    2, 0x06,
+       4,    1,   52,    2, 0x06,
 
  // slots: name, argc, parameters, tag, flags
-       6,    0,   55,    2, 0x08 /* Private */,
-       7,    0,   56,    2, 0x08 /* Private */,
-       8,    0,   57,    2, 0x08 /* Private */,
-       9,    1,   58,    2, 0x08 /* Private */,
-      10,    1,   61,    2, 0x08 /* Private */,
+       6,    0,   55,    2, 0x08,
+       7,    0,   56,    2, 0x08,
+       8,    0,   57,    2, 0x08,
+       9,    1,   58,    2, 0x08,
+      10,    1,   61,    2, 0x08,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    3,
@@ -163,7 +163,6 @@ int SerialLog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: *reinterpret_cast< int*>(_v) = speedData(); break;
         case 1: *reinterpret_cast< int*>(_v) = rpmData(); break;
-        default: break;
         }
         _id -= 2;
     } else if (_c == QMetaObject::WriteProperty) {
@@ -171,7 +170,6 @@ int SerialLog::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
         switch (_id) {
         case 0: setspeedData(*reinterpret_cast< int*>(_v)); break;
         case 1: setrpmData(*reinterpret_cast< int*>(_v)); break;
-        default: break;
         }
         _id -= 2;
     } else if (_c == QMetaObject::ResetProperty) {

@@ -5,7 +5,7 @@ FocusScope {
 
     ListView {
         id: pointerView
-        x:50;width:300;height:300
+        x:80;width:300;height:300//50
         focus: true
         orientation: ListView.Horizontal
         model:switch(cluster.configurableBackground_index){case 9:skin_9_pointerOption;break;case 3:skin_12_pointerOption;break;case 12:skin_12_pointerOption;break;default:pointerOption;}
