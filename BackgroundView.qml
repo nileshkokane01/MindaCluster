@@ -8,6 +8,8 @@ FocusScope {
         x:50;width:370;height:370
         focus: true
         orientation: ListView.Horizontal
+        keyNavigationWraps :true
+        highlightMoveDuration:250
         model:backgroundOption; cacheBuffer: 100
         delegate: BackgrouldDelegate {}
 
@@ -38,12 +40,12 @@ FocusScope {
             widthh:1082
             Heightt:480
         }
-        ListElement{
+       /* ListElement{
             sourcee:"image/Skin_16.png"
             scalee:0.22
             widthh:1082
             Heightt:480
-        }
+        }*/
         ListElement{
             sourcee:"image/Skin_4.png"
             scalee: 0.22

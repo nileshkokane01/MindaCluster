@@ -5,9 +5,11 @@ FocusScope {
 
     ListView {
         id: pointerView
-        x:80;width:300;height:300//50
+        x:50;width:300;height:300
         focus: true
         orientation: ListView.Horizontal
+        keyNavigationWraps :true
+        highlightMoveDuration: 280
         model:switch(cluster.configurableBackground_index){case 9:skin_9_pointerOption;break;case 3:skin_12_pointerOption;break;case 12:skin_12_pointerOption;break;default:pointerOption;}
         cacheBuffer: 100
         delegate: PointerDelegate {}

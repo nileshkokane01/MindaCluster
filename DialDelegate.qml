@@ -20,7 +20,7 @@ Item {
         scale: scalee
     }
 
-    Keys.onSpacePressed: {
+    Keys.onReturnPressed: {
 
         switch(cluster.configurableBackground_index){
 

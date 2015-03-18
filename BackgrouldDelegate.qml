@@ -23,7 +23,7 @@ Item {
         height:Heightt
     }
 
-    Keys.onSpacePressed: {
+    Keys.onReturnPressed: {
         switch(index){
 
         case 0:
@@ -52,7 +52,7 @@ Item {
             rpm_active.opacity   = cluster.startFlag==true? 0:0
             speed_active.opacity = cluster.startFlag==true? 0:0
             break;
-
+/*
         case 3:
             cluster.configurableBackground="image/Skin_16.png"
             cluster.configurableBackground_index = 4
@@ -60,8 +60,8 @@ Item {
             rpm_active.opacity   = cluster.startFlag==true? 0:0
             speed_active.opacity = cluster.startFlag==true? 0:0
             break;
-
-        case 4:
+*/
+        case 3:
             cluster.configurableBackground="image/Skin_4.png"
             cluster.configurableBackground_index = 1
             switch(cluster.configurableDial_index)
@@ -120,7 +120,7 @@ Item {
             }
             break;
 
-        case 5:
+        case 4:
             cluster.configurableBackground="image/Skin_6.png"
             cluster.configurableBackground_index = 6
             switch(cluster.configurableDial_index)
@@ -179,7 +179,7 @@ Item {
             }
             break;
 
-        case 6:
+        case 5:
             cluster.configurableBackground="image/Skin_7.png"
             cluster.configurableBackground_index = 7
             switch(cluster.configurableDial_index)
@@ -238,7 +238,7 @@ Item {
             }
             break;
 
-        case 7:
+        case 6:
             cluster.configurableBackground="image/Skin_11.png"
             cluster.configurableBackground_index = 13
             rpm_active.opacity   = cluster.startFlag==true? 0:0

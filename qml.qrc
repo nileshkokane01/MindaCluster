@@ -150,5 +150,7 @@
         <file>image/Skin_Blank_Gauge_Pointer3.png</file>
         <file>image/Skin_Blank_Speedo_RPM_Pointer2.png</file>
         <file>image/Skin_Blank_Speedo_RPM_Pointer3.png</file>
+        <file>CalendarView.qml</file>
+        <file>SetDateTimeView.qml</file>
     </qresource>
 </RCC>

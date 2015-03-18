@@ -4,9 +4,10 @@ FocusScope {
     clip: true
     ListView {
         id: list2
-        x:20;height:150;//width:250;//3
-        focus: true
+        x:32;height:150;//width:250;
+        focus:true
         orientation: ListView.Vertical
+        keyNavigationWraps :true
         anchors.margins: 3
         model:myMenu; cacheBuffer: 400
         delegate: ListmenuDelegate {}

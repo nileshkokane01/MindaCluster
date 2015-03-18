@@ -20,7 +20,8 @@ Item {
         scale:scalee
     }
 
-    Keys.onSpacePressed: {
+    Keys.onReturnPressed:
+    {
 
         switch(cluster.configurableBackground_index){
         case 9:
@@ -39,6 +40,7 @@ Item {
                    break;
             case 4:
                    cluster.skin_9_configurablePointer="image/Skin_9_RPM_Pointer5.png"
+
                    break;
             }
             break;

@@ -25,8 +25,9 @@ Item {
         font.pixelSize: 14
     }
 
-
-    Keys.onSpacePressed: {
+    Keys.onReturnPressed:
+      { cluster.navigation_step += 1;
+        if(cluster.navigation_step==3){
          switch(index){
          case 0:
              viewBackgroundoption.focus=true
@@ -37,7 +38,8 @@ Item {
          case 2:
              viewDialoption.focus=true
              break;
-         case 3:
+         case 3:           
+             viewCalendaroption.focus=true
              break;
          case 4:
              break;
@@ -50,11 +52,11 @@ Item {
              cluster.dummySerialselect=true
              break;
          }
-
+        }
      }
 
 
-    states: State {
+   states: State {
         name: "active"; when: container.activeFocus
         PropertyChanges { target: content; color: "#FCFFF5"; scale: 1.1 }
         PropertyChanges { target: label; font.pixelSize: 16 }

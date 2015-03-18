@@ -3,7 +3,7 @@ import QtQuick 2.1
 FocusScope {
     id:startStopButton
     clip: false
-    property bool flipped: false
+    //property bool flipped: false
     // engine start and stop button with flipable property
     Flipable {
         id: flipable

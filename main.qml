@@ -4,29 +4,46 @@ import QtQuick.Controls 1.1
 import CircleGraph 1.0
 import serial 1.0
 
+
 ApplicationWindow {
     visible: true
     width: 1280
     height: 480
-    visibility:Window.FullScreen
+    //    visibility:Window.FullScreen
 
     Rectangle {
         id: cluster
         width:1280; height: 480;
-        radius: switch(cluster.configurableBackground_index){case 3:0;break;case 9:0;break;case 12:0;break;default:0}
-        border.color: switch(cluster.configurableBackground_index){case 3:"white";break;case 9:"white";break;case 12:"white";break;default:""}
-        border.width:0 //switch(cluster.configurableBackground_index){case 3:10;break;case 9:10;break;case 12:10;break;default:0}
-        color: switch(cluster.configurableBackground_index){case 1:"grey";break;case 13:"grey";break;default:"black"}
+        color: switch(cluster.configurableBackground_index){case 1:"white";break;case 13:"black";break;default:"black"}
 
+        property int hr: 10
+        property int min: 59
+        property int sec:20
+        property int month:12
+        property int days:12
+        property int year:2015
 
+        property int setDD: 0 //cluster.days
+        property int setMM: 0//cluster.month
+        property int setYY: 0//cluster.year
+        property int setHH: 0//cluster.hr
+        property int setMN: 0//cluster.min
+        property int setSS: 0//cluster.sec
         property bool startFlag: false
+        property bool menuFlag: true
+        property bool startStopEnable: false
+        property int  startStop: 0
+        property int  menu: 0
+        property bool startStopActive: false
+        property bool flipped: false
+        property int  navigation_step:0
         property real dialOpacity : 0
-        property real  rpmValue: 0
-        property real  speedValue: 0
+        property real rpmValue: 0
+        property real speedValue: 0
         property int  gear: 0
-        property int fuelValue: 30
-        property int fuelDummy:30
-        property int tempDummy:0
+        property int  fuelValue: 30
+        property int  fuelDummy:30
+        property int  tempDummy:0
 
         property bool turn_rightFlag: false
         property bool turn_leftFlag: false
@@ -38,7 +55,7 @@ ApplicationWindow {
         property bool brakeFlag: false
 
 
-        property string configurablePointer:"image/Pointer6.png"
+        property string configurablePointer:"image/Pointer5.png"
         property string configurableBackground:""//"image/Skin_4.png"
         property string configurableDial:"image/original Speedo.png"
         property int configurableDial_index:3
@@ -171,11 +188,6 @@ ApplicationWindow {
                 //smooth: true
                 source: "image/Music icon.png"
 
-                focus: true
-                Keys.onRightPressed: music_icon.x = music_icon.x + 20
-                Keys.onLeftPressed: music_icon.x = music_icon.x - 20
-                Keys.onUpPressed: music_icon.y = music_icon.y - 20
-                Keys.onDownPressed: music_icon.y = music_icon.y + 20
 
 
             }
@@ -510,41 +522,7 @@ ApplicationWindow {
 
         }
 
-        /*
-        Text {
-            id: speed_down
-            x: 840
-            y: 250
-            z: 3
-            color: "#cde81d"
-            text: parseInt(speedoMeter.value-1)
-            font.family: "Abyssinica SIL"
-            font.italic: true
-            smooth: true
-            opacity: switch(cluster.configurableDial_index){case 1:0;break;case 2:0.3;break;}
-            style: Text.Raised
-            font.pixelSize: 30
-            visible: false
 
-        }
-
-        Text {
-            id: speed_up
-            x: 840
-            y: 210
-            z: 3
-            color: "#cde81d"
-            text: parseInt(speedoMeter.value+1)
-            font.family: "Abyssinica SIL"
-            font.italic: true
-            smooth: true
-            opacity: switch(cluster.configurableDial_index){case 1:0;break;case 2:0.3;break;}
-            style: Text.Raised
-            font.pixelSize: 30
-            visible: false
-
-        }
-*/
         Image {
             id: neutral
             x: switch(cluster.configurableBackground_index){case 3:625;break;case 9:630;break;case 12:625;break;case 13:625;break;default:598}
@@ -573,10 +551,7 @@ ApplicationWindow {
 
             SequentialAnimation on y {
                 id: bounce_display_gear
-                //loops: Animation.Infinite
-                //transform: Rotation{angle:{30}}
 
-                // Move from minHeight to maxHeight in 300ms, using the OutExpo easing function
                 NumberAnimation {
                     from: display_gear.minHeight; to: display_gear.maxHeight
                     easing.type: Easing.OutExpo; duration: 300
@@ -625,18 +600,14 @@ ApplicationWindow {
                 // Then pause for 500ms
                 PauseAnimation { duration: 500 }
             }
-            //! [0]
-            // Animate the y property. Setting loops to Animation.Infinite makes the
-            // animation repeat indefinitely, otherwise it would only run once.
 
-            //! [0]
         }
         Text {
             id: totalDistance
             x: 563
             y: 131
             color: "#a5bcc6"
-            text: "Distance: 5000"
+            text: "Distance:"
             smooth: true
             opacity: 0
             style: Text.Raised
@@ -650,15 +621,15 @@ ApplicationWindow {
         Text {
             id: destination
             x: 363
-            y: 131
+            y: 0
             color: "#a5bcc6"
-            text: "Destination: 51 Street"
-            font.family: "Droid Sans Armenian"
+            text: "Destination: Time Square, NY"
+            font.family: "DejaVu Sans"
+            font.bold: true
             smooth: true
             opacity: 0
             style: Text.Raised
-            font.pixelSize: 15
-            font.italic: true
+            font.pixelSize:15
             z: 0
         }
 
@@ -677,15 +648,50 @@ ApplicationWindow {
             z: 0
         }
 
+        Timer{
+            id: timer
+            interval: 1000
+            repeat: true
+            running: true
 
+            onTriggered:
+            {
+                if((++cluster.sec) > 59)                        // seconds counter
+                {
+                    cluster.sec=0;
+                    //                   cluster.updateTime=True;
+                    if((++cluster.min) > 59)                   // minits counter
+                    {
+                        cluster.min=0;
+                        if((++cluster.hr) > 23) 				  // hours counter
+                        {
+                            cluster.hr=0;
+                            //                          cluster.updateDate=True;
+                            if ((++cluster.days ==29 && cluster.month===2 && (cluster.year%4 !== 0)) || (cluster.days === 30 && cluster.month===2)|| (cluster.days === 31 && (cluster.month===4 || cluster.month===6 || cluster.month===9 || cluster.month===11))||(cluster.days === 32))
+                            {
+                                cluster.month++; cluster.days=1;
+                            }
+                            if (cluster.month === 13)
+                            {
+                                cluster.year++; cluster.month=1;
+                            }
+
+                        }
+                    }
+                }
+                time.text = "Time: "+ Qt.formatTime(new Date('','','',cluster.hr,cluster.min,cluster.sec),"hh:mm:ss")//"Time: "+ cluster.hr +":"+ cluster.min +":"+ cluster.sec //cluster.time_Str //qsTr("Time: ")+
+                date.text = "Date: "+ Qt.formatDate(new Date(cluster.year,cluster.month-1,cluster.days,'','',''),"dd.MM.yyyy")//cluster.days +"-"+ cluster.month +"-"+ cluster.year
+                totalDistance.text="Distance:" + cluster.min
+            }
+        }
         Text {
             id: date
             x: 363
             y: 131
-            color: "#a5bcc6"
-            text: " Date: 28:02:2017"
+            text: "Date: "
             smooth: true
-            opacity: 0
+            color: "#a5bcc6"
+            opacity:0
             style: Text.Raised
             font.pixelSize: 15
             font.bold: true
@@ -803,6 +809,8 @@ ApplicationWindow {
             font.pixelSize: 15
         }
 
+
+
         Item{
             id:skin_9
             scale:0.8
@@ -831,16 +839,7 @@ ApplicationWindow {
                         PropertyChanges { target: skin_9_RPM_dail; source:"image/Skin_9_RPM2.png"}
                     }
                 ]
-                /*        Image{
-                   id:skin_9_RPM_Black_Patch
-                   anchors.horizontalCenter: parent.horizontalCenter
-                   anchors.verticalCenter: parent.verticalCenter
-                   z: 3
-                   scale:1
-                   opacity: switch(cluster.configurableBackground_index){case 9:1;break;default:0}
-                   source: "image/Skin_9_RPM_Black_Patch.png"
 
-                }*/
                 Rectangle{
                     id :blackPatch_rpm
                     anchors.centerIn: skin_9_RPM_dail
@@ -882,8 +881,6 @@ ApplicationWindow {
                 id: skin_9_Speed_dail
                 x: 480
                 y: 60
-                //anchors.horizontalCenter:
-                //anchors.verticalCenter: 240
                 z: 2
                 scale:1 //0.50
                 opacity: switch(cluster.configurableBackground_index){case 9:1;break;default:0}
@@ -1017,7 +1014,7 @@ ApplicationWindow {
         Item{
             id:skin_Blank
             //anchors.centerIn: cluster.Center
-            x:140;
+            x:140
             y:60
             scale: 0.8
 
@@ -1347,31 +1344,6 @@ ApplicationWindow {
         }
 
 
-        /*  Item{
-            id:skin_14
-
-            Image {
-                id: skin_14_RPM_pointer
-                x: switch(cluster.configurableBackground_index){case 2:90;break;case 3:124;break;}
-                y: switch(cluster.configurableBackground_index){case 2:340;break;case 3:160;break;}
-                z: 3
-                scale:1
-                opacity: switch(cluster.configurableBackground_index){case 2:1;break;case 3:1;break;case 4:1;break;case 5:0;break;default:0}
-                source: "image/Skin_14_Gauge_Pointer.png" //Skin_14_Gauge_Pointer.png"
-            }
-
-            Image {
-                id: skin_14_Speedo_pointer
-                x: switch(cluster.configurableBackground_index){case 2:1024;break;case 3:124;break;}
-                y: switch(cluster.configurableBackground_index){case 2:340;break;case 3:160;break;}
-                z: 3
-                scale:1
-                opacity: switch(cluster.configurableBackground_index){case 2:1;break;case 3:1;break;case 4:1;break;case 5:0;break;default:0}
-                source: "image/Skin_14_Gauge_Pointer.png" //Skin_14_Gauge_Pointer.png"
-            }
-        } */
-
-
         Item  {
             id: speedoMeter
             property real value : 0
@@ -1390,8 +1362,7 @@ ApplicationWindow {
                 y: 28;
                 opacity: switch(cluster.configurableBackground_index){case 2:0;break;case 3:0;break;case 4:0;break;case 5:0;break;case 8:0;break;case 9:0;break;case 12:0;break;case 13:0;break;default:1}
                 z: 3;
-                //scale:0.7
-                //source: "image/speed_inactive.png"
+
                 states:[
                     State {
                         name: "change_speed_dial1"; when: cluster.configurableDial_index == 1
@@ -1576,11 +1547,7 @@ ApplicationWindow {
 
 
         states: [
-            /* State {
-                name: "parseConfigurationMenu"
-                when: listItem.activeFocus
-                PropertyChanges { target: listItem; x: 0 }
-            },*/
+
 
             State {
                 name: "parseMenuOption"
@@ -1591,7 +1558,7 @@ ApplicationWindow {
             State{
                 name: "parsePointers"
                 when:viewPointeroption.activeFocus
-                PropertyChanges {target:viewPointeroption; x:425}
+                PropertyChanges {target:viewPointeroption; x:460}
 
             },
 
@@ -1605,16 +1572,21 @@ ApplicationWindow {
             State{
                 name: "parseDial"
                 when:viewDialoption.activeFocus
-                PropertyChanges {target:viewDialoption; x:425}
+                PropertyChanges {target:viewDialoption; x:465}
 
-            }/*,
+            },
 
             State{
-                name: "display_pathview_menu"
-                when:Pathview_menu.activeFocus
-                PropertyChanges {target:Pathview_menu; x:50}
+                name: "parseCalender"
+                when:viewCalendaroption.activeFocus
+                PropertyChanges {target:viewCalendaroption; x:500; y:100} //x:425
+            },
 
-            }*/
+            State {
+                name: "dateTimeAppear"
+                when: viewDateTimeoption.activeFocus
+                PropertyChanges { target:viewDateTimeoption; x:565;y:200;opacity:1}
+            }
 
         ]
 
@@ -1624,7 +1596,112 @@ ApplicationWindow {
         }
 
 
+        Keys.onEscapePressed:
+        {
 
+            if(viewDateTimeoption.activeFocus==false)
+            {
+                cluster.navigation_step -= 1;
+
+                switch(cluster.navigation_step)
+                {
+                case 0:
+
+                    listmenu.focus=false
+                    cluster.menu = 0
+                    cluster.startStop = 0
+                    break
+                case 1:
+
+                    if(cluster.startStopEnable == true)
+                    {
+                        cluster.startStop = 0
+                    }
+                    else{
+                        listmenu.focus=false
+                        cluster.menu = 1
+                    }
+                    break
+                case 2:
+                    listmenu.focus=true
+                    cluster.menu = 0
+                    break
+                default:
+
+                    cluster.navigation_step=0
+                    if((cluster.menuFlag == true))
+                    {
+                        cluster.startStop = 1
+                        cluster.menu = 0
+                        cluster.menuFlag = false
+                    }
+                    else if((cluster.startStopEnable == true))//||(cluster.startStop == 1)
+                    {
+                        cluster.menu = 1
+                        cluster.startStop = 0
+                        cluster.startStopEnable = false
+                    }
+                    else if((cluster.startStop == 1)||(cluster.menu == 1))
+                    {
+                        if(cluster.startStop == 1){cluster.startStopEnable = true;cluster.menuFlag = false;}
+                        else if (cluster.menu == 1){cluster.menuFlag = true;cluster.startStopEnable = false;}
+
+                        cluster.menu = 0
+                        cluster.startStop = 0
+
+                    }
+
+                }
+            }
+        }
+        Keys.onReturnPressed:
+        {
+            cluster.navigation_step += 1;
+            switch(cluster.navigation_step)
+            {
+            case 0:
+                listmenu.focus=false
+                cluster.menu = 0
+                cluster.startStop = 0
+                break
+            case 1:
+                if((cluster.menuFlag == true)||(cluster.menu == 1))
+                {
+                    cluster.menuFlag = true
+                    cluster.menu = 1
+                    listmenu.focus=false
+                }
+                else if(cluster.startStop == 1)
+                {
+                    cluster.startStopEnable = true
+                    startstop()
+                }
+
+                break
+            case 2:
+                if(cluster.startStop == 1 )//cluster.startStopEnable == true
+                {startstop()}
+                else
+                {
+                    listmenu.focus=true
+                    cluster.menu = 0
+                }
+                break
+            case 3:
+                if(cluster.startStop == 1 )//cluster.startStopEnable == true
+                {
+                    cluster.navigation_step = 1
+                    startstop()
+                }
+                else
+                {listmenu.focus=false;}
+                break
+            default :
+
+                break
+
+            }
+        }
         FocusScope {
             id: configurableFocus
             z:5;width: parent.width; height: parent.height
@@ -1634,12 +1711,13 @@ ApplicationWindow {
             Rectangle {
                 id: menuOption
                 width: 120; height: 30;
-                x:600;y:120;  //560
+                x:600;y:120;
                 color: "grey"
                 anchors.topMargin: 3
                 antialiasing: true
                 radius: 10
                 opacity:0
+                focus:true
 
                 Text{
                     id:menu
@@ -1650,7 +1728,7 @@ ApplicationWindow {
                 }
 
                 states: State {
-                    name: "focusMenu"; when: menuOption.activeFocus
+                    name: "focusMenu"; when: (cluster.menu == 1) //&&(cluster.startStopEnable == false)) //(cluster.menuFlag == true)
                     PropertyChanges { target: menuOption; color: "#FCFFF5"; scale: 1.1; opacity:1}
                     PropertyChanges { target: menu; font.pixelSize: 16 }
                 }
@@ -1659,22 +1737,15 @@ ApplicationWindow {
                     NumberAnimation { properties: "scale"; duration: 100 }
                 }
 
-                activeFocusOnTab: true //if(cluster.startFlag == false)true;else false;
-                Keys.onSpacePressed: listmenu.focus=true
 
-                Keys.onEnterPressed: Pathview_menu.focus=true
             }
-
 
             Listmenu {
                 id: listmenu
                 y:140; width: parent.width; height: parent.height ;anchors.margins:3
                 opacity:0
 
-            }/**/
-
-
-
+            }
 
             PointerView{
                 id:viewPointeroption ;width: 350; height:350;x:-1300;y:100;z:3
@@ -1693,6 +1764,13 @@ ApplicationWindow {
             }
 
 
+            CalendarView {
+                id:viewCalendaroption;x:1800
+            }
+            SetDateTimeView {
+                id:viewDateTimeoption;x:1500;y:100;z:3   //anchors.centerIn: parent
+            }
+
 
             StartstopButton{
 
@@ -1700,531 +1778,533 @@ ApplicationWindow {
                 width:parent.width;height:320;y:30
                 opacity:0
 
-                states: State {
-                    name: "focusStartStopButton"; when: startStopbutton.activeFocus
-                    PropertyChanges { target: startStopbutton; scale: 0.9;opacity:1 }
-
-                }
-
-                transitions: Transition {
-                    NumberAnimation { properties: "scale"; duration: 100 }
-                }
-
-                activeFocusOnTab: true
-                Keys.onSpacePressed: {
-                    flipped = !flipped
-                    cluster.startFlag = !cluster.startFlag
-                    if(cluster.startFlag == true)
-                    {
-
-                        dialEffectStop.stop()                      // stop dial animation
-                        dialEffectStart.start()                    // start dial effect animation
-                        indicatorAnimateFocus.stop()               // stop indicator animation
-                        indicatorAnimatedDim.start()               // startindictor effect animation
-                        rpmAndspeedUpdate.running = true           // start rpmAndspeedUpdate timer
-                        dummyAnimation.running=true
-                        fuelAnnimation.start()
-
-
-
-                    }
-                    else {
-
-                        dialEffectStart.stop()                     // stop dial effect animation
-                        dialEffectStop.start()                     // start dial effect stop animation
-                        indicatorAnimateFocus.start()              // start indicator focus annimation
-                        indicatorAnimatedDim.stop()                // stop indicator animation
-                        dummyAnimation.running=false
-                        fuelAnnimation.stop()
-
-                    }
-                }
-            }
-        }
-
-        SequentialAnimation on fuelDummy {
-            id:fuelAnnimation
-            loops: Animation.Infinite
-            running: false
-            NumberAnimation {
-                from: 0
-                to: 30
-                duration: 3000
-            }
-            NumberAnimation {
-                from:30
-                to: 0
-                duration: 3000
-            }
-        }
-
-
-
-
-
-
-        // start dial glowing effect
-        ParallelAnimation{
-            id: dialEffectStart
-            running: false
-
-            NumberAnimation { target:skin_9;  property:"x";to:-130; duration: 1500}
-            NumberAnimation { target:skin_9;  property:"y";to:-50; duration: 1500}
-            NumberAnimation { target:skin_9;  property:"scale";to:1.2; duration: 1500}
-            NumberAnimation { target:skin_9_RPM_dail;  property:"x";to:skin_9_RPM_dail.x+100; duration: 1500}
-            NumberAnimation { target:skin_9_FG_TG_dail;  property:"x";to:skin_9_FG_TG_dail.x-100; duration: 1500}
-
-            NumberAnimation { target:skin_Blank;  property:"x";to:switch(cluster.configurableBackground_index){case 13:60;break;default:0} duration: 1500}
-            NumberAnimation { target:skin_Blank;  property:"y";to:0; duration: 1500}
-            NumberAnimation { target:skin_Blank;  property:"scale";to:switch(cluster.configurableBackground_index){case 13:0.90;break;default:1} duration: 1500}
-            NumberAnimation { target:skin_Blank_FG_dail;  property:"x";to:20; duration: 1500}
-            NumberAnimation { target:skin_Blank_FG_dail;  property:"y";to:250; duration: 1500}
-            NumberAnimation { target:skin_Blank_TG_dail;  property:"x";to:1025; duration: 1500}
-            NumberAnimation { target:skin_Blank_TG_dail;  property:"y";to:250; duration: 1500}
-
-            NumberAnimation { target:digitalSpeed;  property:"x";to:switch(cluster.configurableBackground_index){case 9:632;break;default:digitalSpeed.x+180}     duration: 500 }
-            NumberAnimation { target:digitalSpeed;  property:"y";to:switch(cluster.configurableBackground_index){case 9:180;break;default:digitalSpeed.y-20}      duration: 500 }
-            NumberAnimation { target:digitalSpeed;  property:"visible";to:1;duration: 100}
-            NumberAnimation { target:digitalSpeed;  property: "scale";to:1; duration: 1500}
-            NumberAnimation { target:digitalSpeed;  property:"opacity";to:switch(cluster.configurableBackground_index){case 9:1;break;default:0}      duration: 500 }
-
-            NumberAnimation { target:display_gear;  property:"opacity";to:1; duration: 1500}
-            NumberAnimation { target:gear_image;    property:"opacity";to:1; duration: 1500}
-
-            NumberAnimation { target:rpm_active;    property:"opacity";to:switch(cluster.configurableBackground_index){case 2:0;break;case 3:0;break;case 9:0;break;case 12:0;break;default:switch(cluster.configurableDial_index){case 2:1;break;default:0;break;}}duration: 1000}
-            NumberAnimation { target:rpm_active;    property:"x";to:rpm_active.x-179;  duration: 500 }
-            NumberAnimation { target:rpm_active;    property:"y";to:rpm_active.y-30;   duration: 500 }
-            NumberAnimation { target:rpm_active;    property:"scale";to:1.2;           duration: 500 }
-            NumberAnimation { target:rpm_inactive;  property:"scale";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:1.40;break;default:1.2;break;}}duration: 500}
-            NumberAnimation { target:rpm_inactive;  property:"x";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:rpm_inactive.x-145;break;default:rpm_inactive.x-175;break;}}duration: 500 }
-            NumberAnimation { target:rpm_inactive;  property:"y";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:rpm_inactive.y-2;break;default:rpm_inactive.y-30;break;}}duration: 500 }
-            NumberAnimation { target:needle;        property:"x"; to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:needle.x-152;break;case 2:needle.x-179;break;case 3:needle.x-177;break;}}duration: 500}//-178
-            NumberAnimation { target:needle;        property:"y"; to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:needle.y-20;break;case 2:needle.y-30;break;case 3:needle.y-32;break;}}duration: 500}//-32
-            NumberAnimation { target:needle;        property:"scale"; to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;case 3:1.2;break;}}duration: 500}
-
-            //NumberAnimation { target:rpmOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:rpmOverlay.x-155;break;case 2:rpmOverlay.x-179;break;}duration: 500}
-            //NumberAnimation { target:rpmOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:rpmOverlay.y-20;break;case 2:rpmOverlay.y-30;break;}duration: 500}
-            //NumberAnimation { target:rpmOverlay; property: "scale"; to:switch(cluster.configurableDial_index){case 1:1.5;break;case 2:1.2;break;}duration: 500}
-
-            NumberAnimation { target:speed_active;      property:"opacity";to:switch(cluster.configurableBackground_index){case 2:0;break;case 3:0;break;case 9:0;break;case 12:0;break;default:switch(cluster.configurableDial_index){case 2:1;break;default:0;break;}}duration: 1000}
-            NumberAnimation { target:speed_active;      property:"x";to:speed_active.x+195; duration: 500 }
-            NumberAnimation { target:speed_active;      property:"y";to:speed_active.y-30; duration: 500 }
-            NumberAnimation { target:speed_active;      property:"scale";to:1.2; duration: 500 }
-            NumberAnimation { target:speed_inactive;    property:"scale";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:1.40;break;default:1.2;break;}}duration: 500 }
-            NumberAnimation { target:speed_inactive;    property:"x";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:speed_inactive.x+175;break;default:speed_inactive.x+195;break;}}duration: 500 }
-            NumberAnimation { target:speed_inactive;    property:"y";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:speed_inactive.y-2;break;default:speed_inactive.y-30;break;}}duration: 500 }
-            NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:needle1.x+182;break;case 2:needle1.x+195;break;case 3:needle1.x+195;break;}}duration: 500} //+193
-            NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:needle1.y-20;break;case 2:needle1.y-30;break;case 3:needle1.y-30;break;}}duration: 500} //-38
-            NumberAnimation { target:needle1;           property:"scale";to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;case 3:1.2;break;}}duration: 500}
-            //NumberAnimation { target:speedOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:needle1.x+173;break;case 2:speedOverlay.x+195;break;}duration: 500}
-            //NumberAnimation { target:speedOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:needle1.y+32;break;case 2:speedOverlay.y-30;break;}duration: 500}
-            //NumberAnimation { target:speedOverlay; property: "scale"; to:switch(cluster.configurableDial_index){case 1:1.5;break;case 2:1.2;break;}duration: 500}
-
-            NumberAnimation { target: turn_left; property: "opacity"; to: 0.2; duration: 100}
-            NumberAnimation { target: turn_right; property: "opacity"; to: 0.2; duration: 500}
-            NumberAnimation { target: turn_left; property: "x"; to: turn_left.x-70; duration: 500}
-            NumberAnimation { target: turn_right; property: "x"; to: turn_right.x+70; duration: 500}
-
-            NumberAnimation{ target: totalDistance; property: "opacity"; to: 1.0; duration: 1000}
-            NumberAnimation{target: totalDistance; property: "x"; to: 150; duration: 800}
-            NumberAnimation{target: totalDistance; property: "y"; to: 400; duration: 800}
-            NumberAnimation{target: destination; property: "opacity"; to: 1.0; duration: 1000}
-            NumberAnimation{target: destination; property: "x"; to: 400; duration: 800}
-            NumberAnimation{target: destination; property: "y"; to: 400; duration: 800}
-            NumberAnimation{target: time; property: "opacity"; to: 1.0; duration: 1000}
-            NumberAnimation{target: time; property: "x"; to: 750; duration: 800}
-            NumberAnimation{target: time; property: "y"; to: 400; duration: 800}
-            NumberAnimation{target: date; property: "opacity"; to: 1.0; duration: 1000}
-            NumberAnimation{target: date; property: "x"; to: 1000; duration: 800}
-            NumberAnimation{target: date; property: "y"; to: 400; duration: 800}
-
-
-            NumberAnimation { target:speed_pie;  property:"scale";to:1; duration: 1500}
-            NumberAnimation { target:pie_rpm;  property:"scale";to:1; duration: 1500}
-
-
-
-        }
-
-        // decrease active effect of dial
-        ParallelAnimation{
-            id: dialEffectStop
-            running: false
-
-            NumberAnimation { target:skin_9;  property:"x";to:130; duration: 1500}
-            NumberAnimation { target:skin_9;  property:"y";to:60; duration: 1500}
-            NumberAnimation { target:skin_9;  property:"scale";to:0.8; duration: 1500}
-
-            NumberAnimation { target:skin_9_RPM_dail;  property:"x";to:190; duration: 1500} //290
-            NumberAnimation { target:skin_9_FG_TG_dail;  property:"x";to:850; duration: 1500} //750
-
-            NumberAnimation { target:skin_Blank;  property:"x";to:140; duration: 1500}
-            NumberAnimation { target:skin_Blank;  property:"y";to:60; duration: 1500}
-            NumberAnimation { target:skin_Blank;  property:"scale";to:0.8; duration: 1500}
-            NumberAnimation { target:skin_Blank_FG_dail;  property:"x";to:260; duration: 1500}
-            NumberAnimation { target:skin_Blank_FG_dail;  property:"y";to:110; duration: 1500}
-            NumberAnimation { target:skin_Blank_TG_dail;  property:"x";to:795; duration: 1500}
-            NumberAnimation { target:skin_Blank_TG_dail;  property:"y";to:110; duration: 1500}
-
-            NumberAnimation { target:rpm_active;    property:"opacity";to: 0;   duration: 1500}
-            NumberAnimation { target:rpm_active;    property:"x";to:241 ;       duration: 500 } //241
-            NumberAnimation { target:rpm_active;    property:"y";to:99;         duration: 500 }
-            NumberAnimation { target:rpm_active;    property:"scale";to:1;      duration: 500 }
-            NumberAnimation { target:rpm_inactive;  property:"y";to:20;         duration: 500 }
-            NumberAnimation { target:rpm_inactive;  property:"x";to: -30;       duration: 500 }
-            NumberAnimation { target:rpm_inactive;  property:"scale";to:1;      duration: 500 }
-            NumberAnimation { target:needle;        property:"x";to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:74;break;case 2:102;break;case 3:91;break;}}duration: 500}//51
-            NumberAnimation { target:needle;        property:"y";to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:64;break;case 2:84; break;case 3:82;break;}}duration: 500}//-22
-            NumberAnimation { target:needle;        property:"scale"; to:1;     duration: 500}
-
-            NumberAnimation { target:speed_active;      property:"x";to: 695;       duration: 500 }
-            NumberAnimation { target:speed_active;      property:"opacity"; to: 0;  duration: 1500}
-            NumberAnimation { target:speed_active;      property:"y";to: 95;        duration: 500 }
-            NumberAnimation { target:speed_active;      property:"scale";to: 1;     duration: 500 }
-            NumberAnimation { target:speed_inactive;    property:"x";to: -9;        duration: 500 }
-            NumberAnimation { target:speed_inactive;    property:"y";to: 28;        duration: 500 }
-            NumberAnimation { target:speed_inactive;    property:"scale";to:1;      duration: 500 }
-            NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:127;break;case 2:124;break;case 3:112;break;}}duration: 500}//73
-            NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:72; break;case 2:91; break;case 3:90; break;}}duration: 500}//-14
-            NumberAnimation { target:needle1;           property:"scale"; to:1;     duration: 500 }
-
-
-            ///NumberAnimation { target: digitalSpeed; property: "x"; to: 840; duration: 500}
-            ///NumberAnimation { target: digitalSpeed; property: "y"; to: 280; duration: 500}
-            NumberAnimation { target: digitalSpeed; property: "scale";to:0.5; duration: 1500}
-            NumberAnimation { target: digitalSpeed; property: "visible";to:0; duration: 2000}
-            //NumberAnimation { target:rpmOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:78;break;case 2:98;break;}duration: 500}
-            ///NumberAnimation { target:speed_up; property:"x";to:840; duration: 500 }
-            ///NumberAnimation { target:speed_up; property:"y";to:210; duration: 500 }
-            ///NumberAnimation { target:speed_up; property:"visible";to:0; duration: 100}
-            ///NumberAnimation { target:speed_down; property:"x";to:840; duration: 500 }
-            ///NumberAnimation { target:speed_down; property:"y";to:250; duration: 500 }
-            ///NumberAnimation { target:speed_down; property:"visible";to:0; duration: 100}
-            NumberAnimation { target:display_gear; property:  "opacity"; to: 0; duration: 100}
-            NumberAnimation { target:gear_image; property:  "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: skin_9_car; property: "scale"; to: 0.05; duration: 100}
-            NumberAnimation{target: skin_9_car; property: "opacity"; to: 0; duration: 100}
-
-
-            //NumberAnimation { target:rpmOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:127;break;case 2:157;break;}duration: 500}
-
-
-
-            //NumberAnimation { target:rpmOverlay; property: "scale"; to:1; duration: 500}
-
-
-            NumberAnimation { target: turn_left; property: "x"; to: 560; duration: 500}
-            NumberAnimation { target: turn_right; property: "x"; to: 660; duration: 500}
-            NumberAnimation { target: turn_left; property: "opacity"; to: 1; duration: 500}
-            NumberAnimation { target: turn_right; property: "opacity"; to: 1; duration: 500}
-            NumberAnimation { target: turn_left; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation { target: turn_right; property: "opacity"; to: 0; duration: 10}
-
-            //Throwing the Speedo meter sideways
-            //NumberAnimation { target:speedOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:135;break;case 2:124;break;}duration: 500}
-            //NumberAnimation { target:speedOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:140;break;case 2:160;break;}duration: 500}
-
-            //NumberAnimation { target:speedOverlay; property: "scale"; to:1; duration: 500}
-
-            //NumberAnimation { target:petrol_indicator; property: "x"; to: 980; duration: 500 }
-            //NumberAnimation { target:petrol_indicator; property: "y"; to: 59; duration: 500 }
-
-
-
-            NumberAnimation{target: totalDistance; property: "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: totalDistance; property: "x"; to: 363; duration: 200}
-            NumberAnimation{target: totalDistance; property: "y"; to: 131; duration: 200}
-            NumberAnimation{target: destination; property: "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: destination; property: "x"; to: 363; duration: 200}
-            NumberAnimation{target: destination; property: "y"; to: 131; duration: 200}
-            NumberAnimation{target: time; property: "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: time; property: "x"; to: 363; duration: 200}
-            NumberAnimation{target: time; property: "y"; to: 131; duration: 200}
-            NumberAnimation{target: date; property: "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: date; property: "x"; to: 363; duration: 200}
-            NumberAnimation{target: date; property: "y"; to: 131; duration: 200}
-
-
-            NumberAnimation {target: oil; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: brake; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: fuelLeak; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: battery; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: parkinglight; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: highBeam; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: turnleft; property: "visible";to:0; duration: 100}
-            NumberAnimation {target: turnright; property: "visible";to:0; duration: 100}
-            NumberAnimation{ target:low_oil; property: "scale"; to: 0.45; duration: 50}
-
-            /////// Back to pavellian from dummyAutomation ////
-            NumberAnimation{target: highbeam; property:  "x"; to: 230; duration: 10}
-            NumberAnimation{target: highbeam; property:  "y"; to: 65; duration: 10}
-            NumberAnimation{target: highbeam; property:  "scale"; to: 0.4; duration: 10}
-            NumberAnimation{target: highBeam; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{ target:low_oil; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:low_oil; property: "x"; to: 540; duration: 10}
-            NumberAnimation{ target:low_oil; property: "y"; to: 92; duration: 10}
-            NumberAnimation{target: low_oil; property:  "scale"; to:0.45; duration: 10}
-            NumberAnimation{ target:oil; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{ target:battery_low; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:battery_low; property: "x"; to: 820; duration: 10}
-            NumberAnimation{ target:battery_low; property: "y"; to: 60; duration: 10}
-            NumberAnimation{target: battery_low; property:  "scale"; to: 0.4; duration: 10}
-            NumberAnimation{ target:battery; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "x"; to: 740; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "y"; to: 38; duration: 10}
-            NumberAnimation{target: petrol_indicator; property:  "scale"; to: 0.3; duration: 10}
-            NumberAnimation{ target:fuelLeak; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{ target:parking_light; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:parking_light; property: "x"; to: 540; duration: 10}
-            NumberAnimation{ target:parking_light; property: "y"; to: 92; duration: 10}
-            NumberAnimation{ target:parking_light; property:  "scale"; to:0.45; duration: 10}
-            NumberAnimation{ target:parkinglight; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{ target:brakefailure; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "x"; to: 540; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "y"; to: 92; duration: 10}
-            NumberAnimation{ target:brakefailure; property:  "scale"; to:0.45; duration: 10}
-            NumberAnimation{ target:brake; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation { target:speed_pie;  property:"scale";to:0.8; duration: 1500}
-            NumberAnimation { target:pie_rpm;  property:"scale";to:0.8; duration: 1500}
-
-        }
-
-
-
-        //increase all indicator opacity
-        SequentialAnimation{
-            id: indicatorAnimateFocus
-            running: false
-
-
-            ///NumberAnimation{target: fuel_gauge; property:  "opacity"; to: 0.1; duration: 100}
-            NumberAnimation{target: neutral; property:  "opacity"; to: 1.0; duration: 1500}
-            NumberAnimation{target: stop_engine; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: water_in_fuel; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: low_aux_air; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: batt_col; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: highbeam; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: setbelt_col; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: trans_1; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: dc_dc_fail; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: rear_fog; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: low_oil; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: filter; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: glow_plug; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: petrol_indicator; property: "opacity"; to: 1; duration: 100 }
-            NumberAnimation{target: cabin_lock; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: exhaust; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: battery_low; property: "opacity"; to: 1; duration: 100}
-            NumberAnimation{target: temp; property: "opacity"; to: 1; duration: 100}
-            NumberAnimation{target: oilIndication; property: "opacity"; to: 1; duration: 100}
-            NumberAnimation{target: engine_check; property: "opacity"; to: 1; duration: 100}
-            NumberAnimation{target: immobilizer; property: "opacity"; to: 1; duration: 100}
-
-        }
-
-        // decrease all indicators opacity
-        SequentialAnimation{
-            id: indicatorAnimatedDim
-            running: false
-            ///NumberAnimation{target: fuel_gauge; property:  "opacity"; to: 1.0; duration: 100}
-            NumberAnimation{target: neutral; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: stop_engine; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: water_in_fuel; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: low_aux_air; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: batt_col; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: highbeam; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: setbelt_col; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: trans_1; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: dc_dc_fail; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: rear_fog; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: low_oil; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: filter; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: glow_plug; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: petrol_indicator; property: "opacity"; to: 0.04; duration: 100 }
-            NumberAnimation{target: cabin_lock; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: exhaust; property:  "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: battery_low; property: "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: temp; property: "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: oilIndication; property: "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: engine_check; property: "opacity"; to: 0.04; duration: 100}
-            NumberAnimation{target: immobilizer; property: "opacity"; to: 0.04; duration: 100}
-
-
-        }
-
-        SequentialAnimation{
-            id: dummyAnimation
-            running: false
-            loops: Animation.Infinite
-
-            NumberAnimation{target: highBeam; property: "scale"; to: 0; duration: 300}
-            NumberAnimation{target: highBeam; property: "visible"; to: 1; duration: 100}
-            NumberAnimation{target: highbeam; property:  "opacity"; to: 0.04; duration: 10}
-            NumberAnimation{target: highbeam; property:  "x"; to: 590; duration: 10}
-            NumberAnimation{target: highbeam; property:  "y"; to: 230; duration: 10}
-            //NumberAnimation{target: highbeam; property:  "z"; to: 0; duration: 10}
-            NumberAnimation{target: highbeam; property:  "scale"; to: 0.9; duration: 10}
-            NumberAnimation{target: highbeam; property:  "opacity"; to: 1; duration: 10}
-            NumberAnimation{target: highBeam; property: "scale"; to: 1.8; duration: 2000}
-            ParallelAnimation{
-                NumberAnimation {target:highbeam; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
-            }
-            NumberAnimation{target: highBeam; property: "scale"; to: 0; duration: 2000}
-            NumberAnimation{target: highbeam; property:  "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: highbeam; property:  "x"; to: 230; duration: 10}
-            NumberAnimation{target: highbeam; property:  "y"; to: 65; duration: 10}
-            NumberAnimation{target: highbeam; property:  "scale"; to: 0.4; duration: 10}
-            NumberAnimation{target: highBeam; property: "visible"; to: 0; duration: 100}
-
-
-            NumberAnimation{target: digitalSpeed; property: "opacity"; to: 0; duration: 100}
-            NumberAnimation{target: display_gear; property: "opacity"; to: switch(cluster.configurableBackground_index){case 9:0;break;default:1} duration: 100}
-            NumberAnimation{target: gear_image; property: "opacity"; to:switch(cluster.configurableBackground_index){case 9:0;break;default:1} duration: 100}
-            NumberAnimation{target: skin_9_car; property: "opacity"; to: 1; duration: 200}
-            NumberAnimation{target: skin_9_car; property: "scale"; to: 0.3; duration: 2000}
-
-
-            NumberAnimation{ target:oil; property: "scale"; to: 0; duration: 300}
-            NumberAnimation{ target:oil; property: "visible"; to: 1; duration: 100}
-            NumberAnimation{ target:low_oil; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:low_oil; property: "x"; to: 580; duration: 10}
-            NumberAnimation{ target:low_oil; property: "y"; to: 230; duration: 10}
-            //NumberAnimation{target: low_oil; property:  "z"; to: 0; duration: 10}
-            NumberAnimation{ target:low_oil; property: "scale"; to: 0.8; duration: 10}
-            NumberAnimation{ target:low_oil; property: "opacity"; to: 1; duration: 10}
-            NumberAnimation{ target:oil; property: "scale"; to: 1.5; duration: 2000}
-            ParallelAnimation{
-                NumberAnimation {target:low_oil; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
-            }
-            NumberAnimation{ target:oil; property: "scale"; to: 0; duration: 2000}
-            NumberAnimation{ target:low_oil; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:low_oil; property: "x"; to: 540; duration: 10}
-            NumberAnimation{ target:low_oil; property: "y"; to: 92; duration: 10}
-            NumberAnimation{target: low_oil; property:  "scale"; to:0.45; duration: 10}
-            NumberAnimation{ target:oil; property: "visible"; to: 0; duration: 100}
-
-
-            NumberAnimation{ target:battery; property: "scale"; to: 0; duration: 300}
-            NumberAnimation{ target:battery; property: "visible"; to: 1; duration: 100}
-            NumberAnimation{ target:battery_low; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:battery_low; property: "x"; to: 615; duration: 10}
-            NumberAnimation{ target:battery_low; property: "y"; to: 220; duration: 10}
-            //NumberAnimation{target: battery_low; property:  "z"; to: 0; duration: 10}
-            NumberAnimation{ target:battery_low; property: "scale"; to: 0.8; duration: 10}
-            NumberAnimation{ target:battery_low; property: "opacity"; to: 1; duration: 10}
-            NumberAnimation{ target:battery; property: "scale"; to: 1.5; duration: 2000}
-            ParallelAnimation{
-                NumberAnimation {target:battery_low; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
-            }
-            NumberAnimation{ target:battery; property: "scale"; to: 0; duration: 2000}
-            NumberAnimation{ target:battery_low; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:battery_low; property: "x"; to: 820; duration: 10}
-            NumberAnimation{ target:battery_low; property: "y"; to: 60; duration: 10}
-            NumberAnimation{target: battery_low; property:  "scale"; to: 0.4; duration: 10}
-            NumberAnimation{ target:battery; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{target: skin_9_car; property: "scale"; to: 0.05; duration: 2000}
-            NumberAnimation{target: skin_9_car; property: "opacity"; to: 0; duration: 200}
-            NumberAnimation{target: digitalSpeed; property: "opacity"; to:switch(cluster.configurableBackground_index){case 9:1;break;default:0;} duration: 100}
-            NumberAnimation{target: display_gear; property: "opacity"; to: 1; duration: 100}
-            NumberAnimation{target: gear_image; property: "opacity"; to: 1; duration: 100}
-
-            NumberAnimation{ target:fuelLeak; property: "scale"; to: 0; duration: 300}
-            NumberAnimation{ target:fuelLeak; property: "visible"; to: 1; duration: 100}
-            NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "x"; to: 600; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "y"; to: 205; duration: 10}
-            //NumberAnimation{target: petrol_indicator; property:  "z"; to: 0; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "scale"; to: 0.6; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 1; duration: 10}
-            NumberAnimation{ target:fuelLeak; property: "scale"; to: 1.5; duration: 2000}
-            ParallelAnimation{
-                NumberAnimation {target:petrol_indicator; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
-            }
-            NumberAnimation{ target:fuelLeak; property: "scale"; to: 0; duration: 2000}
-            NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "x"; to: 740; duration: 10}
-            NumberAnimation{ target:petrol_indicator; property: "y"; to: 38; duration: 10}
-            NumberAnimation{target: petrol_indicator; property:  "scale"; to: 0.3; duration: 10}
-            NumberAnimation{ target:fuelLeak; property: "visible"; to: 0; duration: 100}
-
-
-            NumberAnimation{ target:parkinglight; property: "scale"; to: 0; duration: 300}
-            NumberAnimation{ target:parkinglight; property: "visible"; to: 1; duration: 100}
-            NumberAnimation{ target:parking_light; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:parking_light; property: "x"; to: 580; duration: 10}
-            NumberAnimation{ target:parking_light; property: "y"; to: 223; duration: 10}
-            //NumberAnimation{ target:parking_light; property:  "z"; to: 0; duration: 10}
-            NumberAnimation{ target:parking_light; property: "scale"; to: 0.8; duration: 10}
-            NumberAnimation{ target:parking_light; property: "opacity"; to: 1; duration: 10}
-            NumberAnimation{ target:parkinglight; property: "scale"; to: 1.5; duration: 2000}
-            ParallelAnimation{
-                NumberAnimation {target:parking_light; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
-            }
-            NumberAnimation{ target:parkinglight; property: "scale"; to: 0; duration: 2000}
-            NumberAnimation{ target:parking_light; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:parking_light; property: "x"; to: 540; duration: 10}
-            NumberAnimation{ target:parking_light; property: "y"; to: 92; duration: 10}
-            NumberAnimation{ target:parking_light; property:  "scale"; to:0.45; duration: 10}
-            NumberAnimation{ target:parkinglight; property: "visible"; to: 0; duration: 100}
-
-            NumberAnimation{ target:brake; property: "scale"; to: 0; duration: 300}
-            NumberAnimation{ target:brake; property: "visible"; to: 1; duration: 100}
-            NumberAnimation{ target:brakefailure; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "x"; to: 600; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "y"; to: 240; duration: 10}
-            //NumberAnimation{ target:brakefailure; property:  "z"; to: 0; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "scale"; to: 1.4; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "opacity"; to: 1; duration: 10}
-            NumberAnimation{ target:brake; property: "scale"; to: 1.5; duration: 2000}
-            ParallelAnimation{
-                NumberAnimation {target:brakefailure; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
-            }
-            NumberAnimation{ target:brake; property: "scale"; to: 0; duration: 2000}
-            NumberAnimation{ target:brakefailure; property: "opacity"; to: 0; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "x"; to: 540; duration: 10}
-            NumberAnimation{ target:brakefailure; property: "y"; to: 92; duration: 10}
-            NumberAnimation{ target:brakefailure; property:  "scale"; to:0.45; duration: 10}
-            NumberAnimation{ target:brake; property: "visible"; to: 0; duration: 100}
-
-
-
-            //NumberAnimation{ target:turnright; property: "visible"; to: 1; duration: 100}
-
-            ParallelAnimation{
-                id:indicator
-                NumberAnimation{ target:turnright; property: "visible"; to: 1; duration: 10}
-                NumberAnimation {target:turn_right; property: "opacity";from: 0.1; to: 1.0 ;loops: 30 }
-
+                states: State
+                {
+                name: "focusStartStopButton"; when: (cluster.startStop == 1)
+                PropertyChanges { target: startStopbutton; scale: 0.9;opacity:1 }
             }
 
-            NumberAnimation{ target:turnright; property: "visible"; to: 0; duration: 10}
-            NumberAnimation {target:turn_right; property: "opacity";to: 0 ;loops: 30 }
-
-
-            //NumberAnimation{ target:turnleft; property: "visible"; to: 1; duration: 100}
-            ParallelAnimation{
-                id:indicator1
-                NumberAnimation{ target:turnleft; property: "visible"; to: 1; duration: 300}
-                NumberAnimation {target:turn_left; property: "opacity";from: 0.1; to: 1.0 ;loops: 30 }
+            transitions: Transition
+            {
+            NumberAnimation { properties: "scale"; duration: 100 }
             }
 
-            NumberAnimation{ target:turnleft; property: "visible"; to: 0; duration: 300}
-            NumberAnimation {target:turn_left; property: "opacity";to: 0 ;loops: 30 }
+    }
+}
+function startstop()
+{
+    flipped = !flipped
+    cluster.startFlag = !cluster.startFlag
+    if(cluster.startFlag == true)
+    {
 
-        }
-
-
+        dialEffectStop.stop()                      // stop dial animation
+        dialEffectStart.start()                    // start dial effect animation
+        indicatorAnimateFocus.stop()               // stop indicator animation
+        indicatorAnimatedDim.start()               // startindictor effect animation
+        rpmAndspeedUpdate.running = true           // start rpmAndspeedUpdate timer
+        dummyAnimation.running=true
+        fuelAnnimation.start()
 
 
 
     }
+    else {
+
+        dialEffectStart.stop()                     // stop dial effect animation
+        dialEffectStop.start()                     // start dial effect stop animation
+        indicatorAnimateFocus.start()              // start indicator focus annimation
+        indicatorAnimatedDim.stop()                // stop indicator animation
+        dummyAnimation.running=false
+        fuelAnnimation.stop()
+
+    }
+
+}
+
+SequentialAnimation on fuelDummy {
+    id:fuelAnnimation
+    loops: Animation.Infinite
+    running: false
+    NumberAnimation {
+        from: 0
+        to: 30
+        duration: 3000
+    }
+    NumberAnimation {
+        from:30
+        to: 0
+        duration: 3000
+    }
+}
+
+
+
+
+
+
+// start dial glowing effect
+ParallelAnimation{
+    id: dialEffectStart
+    running: false
+
+    NumberAnimation { target:skin_9;  property:"x";to:-130; duration: 1500}
+    NumberAnimation { target:skin_9;  property:"y";to:-50; duration: 1500}
+    NumberAnimation { target:skin_9;  property:"scale";to:1.2; duration: 1500}
+    NumberAnimation { target:skin_9_RPM_dail;  property:"x";to:skin_9_RPM_dail.x+100; duration: 1500}
+    NumberAnimation { target:skin_9_FG_TG_dail;  property:"x";to:skin_9_FG_TG_dail.x-100; duration: 1500}
+
+    NumberAnimation { target:skin_Blank;  property:"x";to:switch(cluster.configurableBackground_index){case 13:60;break;default:0} duration: 1500}
+    NumberAnimation { target:skin_Blank;  property:"y";to:0; duration: 1500}
+    NumberAnimation { target:skin_Blank;  property:"scale";to:switch(cluster.configurableBackground_index){case 13:0.90;break;default:1} duration: 1500}
+    NumberAnimation { target:skin_Blank_FG_dail;  property:"x";to:20; duration: 1500}
+    NumberAnimation { target:skin_Blank_FG_dail;  property:"y";to:250; duration: 1500}
+    NumberAnimation { target:skin_Blank_TG_dail;  property:"x";to:1025; duration: 1500}
+    NumberAnimation { target:skin_Blank_TG_dail;  property:"y";to:250; duration: 1500}
+
+    NumberAnimation { target:digitalSpeed;  property:"x";to:switch(cluster.configurableBackground_index){case 9:632;break;default:digitalSpeed.x+180}     duration: 500 }
+    NumberAnimation { target:digitalSpeed;  property:"y";to:switch(cluster.configurableBackground_index){case 9:180;break;default:digitalSpeed.y-20}      duration: 500 }
+    NumberAnimation { target:digitalSpeed;  property:"visible";to:1;duration: 100}
+    NumberAnimation { target:digitalSpeed;  property: "scale";to:1; duration: 1500}
+    NumberAnimation { target:digitalSpeed;  property:"opacity";to:switch(cluster.configurableBackground_index){case 9:1;break;default:0}      duration: 500 }
+
+    NumberAnimation { target:display_gear;  property:"opacity";to:1; duration: 1500}
+    NumberAnimation { target:gear_image;    property:"opacity";to:1; duration: 1500}
+
+    NumberAnimation { target:rpm_active;    property:"opacity";to:switch(cluster.configurableBackground_index){case 2:0;break;case 3:0;break;case 9:0;break;case 12:0;break;default:switch(cluster.configurableDial_index){case 2:1;break;default:0;break;}}duration: 1000}
+    NumberAnimation { target:rpm_active;    property:"x";to:rpm_active.x-179;  duration: 500 }
+    NumberAnimation { target:rpm_active;    property:"y";to:rpm_active.y-30;   duration: 500 }
+    NumberAnimation { target:rpm_active;    property:"scale";to:1.2;           duration: 500 }
+    NumberAnimation { target:rpm_inactive;  property:"scale";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:1.40;break;default:1.2;break;}}duration: 500}
+    NumberAnimation { target:rpm_inactive;  property:"x";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:rpm_inactive.x-145;break;default:rpm_inactive.x-175;break;}}duration: 500 }
+    NumberAnimation { target:rpm_inactive;  property:"y";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:rpm_inactive.y-2;break;default:rpm_inactive.y-30;break;}}duration: 500 }
+    NumberAnimation { target:needle;        property:"x"; to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:needle.x-152;break;case 2:needle.x-179;break;case 3:needle.x-177;break;}}duration: 500}//-178
+    NumberAnimation { target:needle;        property:"y"; to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:needle.y-20;break;case 2:needle.y-30;break;case 3:needle.y-32;break;}}duration: 500}//-32
+    NumberAnimation { target:needle;        property:"scale"; to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;case 3:1.2;break;}}duration: 500}
+
+    //NumberAnimation { target:rpmOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:rpmOverlay.x-155;break;case 2:rpmOverlay.x-179;break;}duration: 500}
+    //NumberAnimation { target:rpmOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:rpmOverlay.y-20;break;case 2:rpmOverlay.y-30;break;}duration: 500}
+    //NumberAnimation { target:rpmOverlay; property: "scale"; to:switch(cluster.configurableDial_index){case 1:1.5;break;case 2:1.2;break;}duration: 500}
+
+    NumberAnimation { target:speed_active;      property:"opacity";to:switch(cluster.configurableBackground_index){case 2:0;break;case 3:0;break;case 9:0;break;case 12:0;break;default:switch(cluster.configurableDial_index){case 2:1;break;default:0;break;}}duration: 1000}
+    NumberAnimation { target:speed_active;      property:"x";to:speed_active.x+195; duration: 500 }
+    NumberAnimation { target:speed_active;      property:"y";to:speed_active.y-30; duration: 500 }
+    NumberAnimation { target:speed_active;      property:"scale";to:1.2; duration: 500 }
+    NumberAnimation { target:speed_inactive;    property:"scale";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:1.40;break;default:1.2;break;}}duration: 500 }
+    NumberAnimation { target:speed_inactive;    property:"x";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:speed_inactive.x+175;break;default:speed_inactive.x+195;break;}}duration: 500 }
+    NumberAnimation { target:speed_inactive;    property:"y";to:switch(cluster.configurableBackground_index){default:switch(cluster.configurableDial_index){case 1:speed_inactive.y-2;break;default:speed_inactive.y-30;break;}}duration: 500 }
+    NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:needle1.x+182;break;case 2:needle1.x+195;break;case 3:needle1.x+195;break;}}duration: 500} //+193
+    NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:needle1.y-20;break;case 2:needle1.y-30;break;case 3:needle1.y-30;break;}}duration: 500} //-38
+    NumberAnimation { target:needle1;           property:"scale";to:switch(cluster.configurableBackground_index){case 2:1;break;default:switch(cluster.configurableDial_index){case 1:1.2;break;case 2:1.2;break;case 3:1.2;break;}}duration: 500}
+    //NumberAnimation { target:speedOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:needle1.x+173;break;case 2:speedOverlay.x+195;break;}duration: 500}
+    //NumberAnimation { target:speedOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:needle1.y+32;break;case 2:speedOverlay.y-30;break;}duration: 500}
+    //NumberAnimation { target:speedOverlay; property: "scale"; to:switch(cluster.configurableDial_index){case 1:1.5;break;case 2:1.2;break;}duration: 500}
+
+    NumberAnimation { target: turn_left; property: "opacity"; to: 0.2; duration: 100}
+    NumberAnimation { target: turn_right; property: "opacity"; to: 0.2; duration: 500}
+    NumberAnimation { target: turn_left; property: "x"; to: turn_left.x-70; duration: 500}
+    NumberAnimation { target: turn_right; property: "x"; to: turn_right.x+70; duration: 500}
+
+    NumberAnimation{ target: totalDistance; property: "opacity"; to: 1.0; duration: 1000}
+    NumberAnimation{target: totalDistance; property: "x"; to: 130; duration: 800}
+    NumberAnimation{target: totalDistance; property: "y"; to: 450; duration: 800}
+    NumberAnimation{target: destination; property: "opacity"; to: 1.0; duration: 1000}
+    NumberAnimation{target: destination; property: "x"; to: 350; duration: 800}
+    NumberAnimation{target: destination; property: "y"; to: 450; duration: 800}
+    NumberAnimation{target: time; property: "opacity"; to: 1.0; duration: 1000}
+    NumberAnimation{target: time; property: "x"; to: 750; duration: 800}
+    NumberAnimation{target: time; property: "y"; to: 450; duration: 800}
+    NumberAnimation{target: date; property: "opacity"; to: 1.0; duration: 1000}
+    NumberAnimation{target: date; property: "x"; to: 1000; duration: 800}
+    NumberAnimation{target: date; property: "y"; to: 450; duration: 800}
+
+
+    NumberAnimation { target:speed_pie;  property:"scale";to:1; duration: 1500}
+    NumberAnimation { target:pie_rpm;  property:"scale";to:1; duration: 1500}
+
+
+
+}
+
+// decrease active effect of dial
+ParallelAnimation{
+    id: dialEffectStop
+    running: false
+
+    NumberAnimation { target:skin_9;  property:"x";to:130; duration: 1500}
+    NumberAnimation { target:skin_9;  property:"y";to:60; duration: 1500}
+    NumberAnimation { target:skin_9;  property:"scale";to:0.8; duration: 1500}
+
+    NumberAnimation { target:skin_9_RPM_dail;  property:"x";to:190; duration: 1500} //290
+    NumberAnimation { target:skin_9_FG_TG_dail;  property:"x";to:850; duration: 1500} //750
+
+    NumberAnimation { target:skin_Blank;  property:"x";to:140; duration: 1500}
+    NumberAnimation { target:skin_Blank;  property:"y";to:60; duration: 1500}
+    NumberAnimation { target:skin_Blank;  property:"scale";to:0.8; duration: 1500}
+    NumberAnimation { target:skin_Blank_FG_dail;  property:"x";to:260; duration: 1500}
+    NumberAnimation { target:skin_Blank_FG_dail;  property:"y";to:110; duration: 1500}
+    NumberAnimation { target:skin_Blank_TG_dail;  property:"x";to:795; duration: 1500}
+    NumberAnimation { target:skin_Blank_TG_dail;  property:"y";to:110; duration: 1500}
+
+    NumberAnimation { target:rpm_active;    property:"opacity";to: 0;   duration: 1500}
+    NumberAnimation { target:rpm_active;    property:"x";to:241 ;       duration: 500 } //241
+    NumberAnimation { target:rpm_active;    property:"y";to:99;         duration: 500 }
+    NumberAnimation { target:rpm_active;    property:"scale";to:1;      duration: 500 }
+    NumberAnimation { target:rpm_inactive;  property:"y";to:20;         duration: 500 }
+    NumberAnimation { target:rpm_inactive;  property:"x";to: -30;       duration: 500 }
+    NumberAnimation { target:rpm_inactive;  property:"scale";to:1;      duration: 500 }
+    NumberAnimation { target:needle;        property:"x";to:switch(cluster.configurableBackground_index){case 2:55;break;default:switch(cluster.configurableDial_index){case 1:74;break;case 2:102;break;case 3:91;break;}}duration: 500}//51
+    NumberAnimation { target:needle;        property:"y";to:switch(cluster.configurableBackground_index){case 2:99;break;default:switch(cluster.configurableDial_index){case 1:64;break;case 2:84; break;case 3:82;break;}}duration: 500}//-22
+    NumberAnimation { target:needle;        property:"scale"; to:1;     duration: 500}
+
+    NumberAnimation { target:speed_active;      property:"x";to: 695;       duration: 500 }
+    NumberAnimation { target:speed_active;      property:"opacity"; to: 0;  duration: 1500}
+    NumberAnimation { target:speed_active;      property:"y";to: 95;        duration: 500 }
+    NumberAnimation { target:speed_active;      property:"scale";to: 1;     duration: 500 }
+    NumberAnimation { target:speed_inactive;    property:"x";to: -9;        duration: 500 }
+    NumberAnimation { target:speed_inactive;    property:"y";to: 28;        duration: 500 }
+    NumberAnimation { target:speed_inactive;    property:"scale";to:1;      duration: 500 }
+    NumberAnimation { target:needle1;           property:"x";to:switch(cluster.configurableBackground_index){case 2:188;break;default:switch(cluster.configurableDial_index){case 1:127;break;case 2:124;break;case 3:112;break;}}duration: 500}//73
+    NumberAnimation { target:needle1;           property:"y";to:switch(cluster.configurableBackground_index){case 2:111;break;default:switch(cluster.configurableDial_index){case 1:72; break;case 2:91; break;case 3:90; break;}}duration: 500}//-14
+    NumberAnimation { target:needle1;           property:"scale"; to:1;     duration: 500 }
+
+
+    ///NumberAnimation { target: digitalSpeed; property: "x"; to: 840; duration: 500}
+    ///NumberAnimation { target: digitalSpeed; property: "y"; to: 280; duration: 500}
+    NumberAnimation { target: digitalSpeed; property: "scale";to:0.5; duration: 1500}
+    NumberAnimation { target: digitalSpeed; property: "visible";to:0; duration: 2000}
+    //NumberAnimation { target:rpmOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:78;break;case 2:98;break;}duration: 500}
+    ///NumberAnimation { target:speed_up; property:"x";to:840; duration: 500 }
+    ///NumberAnimation { target:speed_up; property:"y";to:210; duration: 500 }
+    ///NumberAnimation { target:speed_up; property:"visible";to:0; duration: 100}
+    ///NumberAnimation { target:speed_down; property:"x";to:840; duration: 500 }
+    ///NumberAnimation { target:speed_down; property:"y";to:250; duration: 500 }
+    ///NumberAnimation { target:speed_down; property:"visible";to:0; duration: 100}
+    NumberAnimation { target:display_gear; property:  "opacity"; to: 0; duration: 100}
+    NumberAnimation { target:gear_image; property:  "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: skin_9_car; property: "scale"; to: 0.05; duration: 100}
+    NumberAnimation{target: skin_9_car; property: "opacity"; to: 0; duration: 100}
+
+
+    //NumberAnimation { target:rpmOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:127;break;case 2:157;break;}duration: 500}
+
+
+
+    //NumberAnimation { target:rpmOverlay; property: "scale"; to:1; duration: 500}
+
+
+    NumberAnimation { target: turn_left; property: "x"; to: 560; duration: 500}
+    NumberAnimation { target: turn_right; property: "x"; to: 660; duration: 500}
+    NumberAnimation { target: turn_left; property: "opacity"; to: 1; duration: 500}
+    NumberAnimation { target: turn_right; property: "opacity"; to: 1; duration: 500}
+    NumberAnimation { target: turn_left; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation { target: turn_right; property: "opacity"; to: 0; duration: 10}
+
+    //Throwing the Speedo meter sideways
+    //NumberAnimation { target:speedOverlay; property: "x"; to:switch(cluster.configurableDial_index){case 1:135;break;case 2:124;break;}duration: 500}
+    //NumberAnimation { target:speedOverlay; property: "y"; to:switch(cluster.configurableDial_index){case 1:140;break;case 2:160;break;}duration: 500}
+
+    //NumberAnimation { target:speedOverlay; property: "scale"; to:1; duration: 500}
+
+    //NumberAnimation { target:petrol_indicator; property: "x"; to: 980; duration: 500 }
+    //NumberAnimation { target:petrol_indicator; property: "y"; to: 59; duration: 500 }
+
+
+
+    NumberAnimation{target: totalDistance; property: "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: totalDistance; property: "x"; to: 363; duration: 200}
+    NumberAnimation{target: totalDistance; property: "y"; to: 131; duration: 200}
+    NumberAnimation{target: destination; property: "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: destination; property: "x"; to: 363; duration: 200}
+    NumberAnimation{target: destination; property: "y"; to: 131; duration: 200}
+    NumberAnimation{target: time; property: "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: time; property: "x"; to: 363; duration: 200}
+    NumberAnimation{target: time; property: "y"; to: 131; duration: 200}
+    NumberAnimation{target: date; property: "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: date; property: "x"; to: 363; duration: 200}
+    NumberAnimation{target: date; property: "y"; to: 131; duration: 200}
+
+
+    NumberAnimation {target: oil; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: brake; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: fuelLeak; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: battery; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: parkinglight; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: highBeam; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: turnleft; property: "visible";to:0; duration: 100}
+    NumberAnimation {target: turnright; property: "visible";to:0; duration: 100}
+    NumberAnimation{ target:low_oil; property: "scale"; to: 0.45; duration: 50}
+
+    /////// Back to pavellian from dummyAutomation ////
+    NumberAnimation{target: highbeam; property:  "x"; to: 230; duration: 10}
+    NumberAnimation{target: highbeam; property:  "y"; to: 65; duration: 10}
+    NumberAnimation{target: highbeam; property:  "scale"; to: 0.4; duration: 10}
+    NumberAnimation{target: highBeam; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{ target:low_oil; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:low_oil; property: "x"; to: 540; duration: 10}
+    NumberAnimation{ target:low_oil; property: "y"; to: 92; duration: 10}
+    NumberAnimation{target: low_oil; property:  "scale"; to:0.45; duration: 10}
+    NumberAnimation{ target:oil; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{ target:battery_low; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:battery_low; property: "x"; to: 820; duration: 10}
+    NumberAnimation{ target:battery_low; property: "y"; to: 60; duration: 10}
+    NumberAnimation{target: battery_low; property:  "scale"; to: 0.4; duration: 10}
+    NumberAnimation{ target:battery; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "x"; to: 740; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "y"; to: 38; duration: 10}
+    NumberAnimation{target: petrol_indicator; property:  "scale"; to: 0.3; duration: 10}
+    NumberAnimation{ target:fuelLeak; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{ target:parking_light; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:parking_light; property: "x"; to: 540; duration: 10}
+    NumberAnimation{ target:parking_light; property: "y"; to: 92; duration: 10}
+    NumberAnimation{ target:parking_light; property:  "scale"; to:0.45; duration: 10}
+    NumberAnimation{ target:parkinglight; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{ target:brakefailure; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "x"; to: 540; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "y"; to: 92; duration: 10}
+    NumberAnimation{ target:brakefailure; property:  "scale"; to:0.45; duration: 10}
+    NumberAnimation{ target:brake; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation { target:speed_pie;  property:"scale";to:0.8; duration: 1500}
+    NumberAnimation { target:pie_rpm;  property:"scale";to:0.8; duration: 1500}
+
+}
+
+
+
+//increase all indicator opacity
+SequentialAnimation{
+    id: indicatorAnimateFocus
+    running: false
+
+
+    ///NumberAnimation{target: fuel_gauge; property:  "opacity"; to: 0.1; duration: 100}
+    NumberAnimation{target: neutral; property:  "opacity"; to: 1.0; duration: 1500}
+    NumberAnimation{target: stop_engine; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: water_in_fuel; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: low_aux_air; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: batt_col; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: highbeam; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: setbelt_col; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: trans_1; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: dc_dc_fail; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: rear_fog; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: low_oil; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: filter; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: glow_plug; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: petrol_indicator; property: "opacity"; to: 1; duration: 100 }
+    NumberAnimation{target: cabin_lock; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: exhaust; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: battery_low; property: "opacity"; to: 1; duration: 100}
+    NumberAnimation{target: temp; property: "opacity"; to: 1; duration: 100}
+    NumberAnimation{target: oilIndication; property: "opacity"; to: 1; duration: 100}
+    NumberAnimation{target: engine_check; property: "opacity"; to: 1; duration: 100}
+    NumberAnimation{target: immobilizer; property: "opacity"; to: 1; duration: 100}
+
+}
+
+// decrease all indicators opacity
+SequentialAnimation{
+    id: indicatorAnimatedDim
+    running: false
+    ///NumberAnimation{target: fuel_gauge; property:  "opacity"; to: 1.0; duration: 100}
+    NumberAnimation{target: neutral; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: stop_engine; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: water_in_fuel; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: low_aux_air; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: batt_col; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: highbeam; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: setbelt_col; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: trans_1; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: dc_dc_fail; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: rear_fog; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: low_oil; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: filter; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: glow_plug; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: petrol_indicator; property: "opacity"; to: 0.04; duration: 100 }
+    NumberAnimation{target: cabin_lock; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: exhaust; property:  "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: battery_low; property: "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: temp; property: "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: oilIndication; property: "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: engine_check; property: "opacity"; to: 0.04; duration: 100}
+    NumberAnimation{target: immobilizer; property: "opacity"; to: 0.04; duration: 100}
+
+
+}
+
+SequentialAnimation{
+    id: dummyAnimation
+    running: false
+    loops: Animation.Infinite
+
+    NumberAnimation{target: highBeam; property: "scale"; to: 0; duration: 300}
+    NumberAnimation{target: highBeam; property: "visible"; to: 1; duration: 100}
+    NumberAnimation{target: highbeam; property:  "opacity"; to: 0.04; duration: 10}
+    NumberAnimation{target: highbeam; property:  "x"; to: 590; duration: 10}
+    NumberAnimation{target: highbeam; property:  "y"; to: 230; duration: 10}
+    //NumberAnimation{target: highbeam; property:  "z"; to: 0; duration: 10}
+    NumberAnimation{target: highbeam; property:  "scale"; to: 0.9; duration: 10}
+    NumberAnimation{target: highbeam; property:  "opacity"; to: 1; duration: 10}
+    NumberAnimation{target: highBeam; property: "scale"; to: 1.8; duration: 2000}
+    ParallelAnimation{
+        NumberAnimation {target:highbeam; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
+    }
+    NumberAnimation{target: highBeam; property: "scale"; to: 0; duration: 2000}
+    NumberAnimation{target: highbeam; property:  "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: highbeam; property:  "x"; to: 230; duration: 10}
+    NumberAnimation{target: highbeam; property:  "y"; to: 65; duration: 10}
+    NumberAnimation{target: highbeam; property:  "scale"; to: 0.4; duration: 10}
+    NumberAnimation{target: highBeam; property: "visible"; to: 0; duration: 100}
+
+
+    NumberAnimation{target: digitalSpeed; property: "opacity"; to: 0; duration: 100}
+    NumberAnimation{target: display_gear; property: "opacity"; to: switch(cluster.configurableBackground_index){case 9:0;break;default:1} duration: 100}
+    NumberAnimation{target: gear_image; property: "opacity"; to:switch(cluster.configurableBackground_index){case 9:0;break;default:1} duration: 100}
+    NumberAnimation{target: skin_9_car; property: "opacity"; to: 1; duration: 200}
+    NumberAnimation{target: skin_9_car; property: "scale"; to: 0.3; duration: 2000}
+
+
+    NumberAnimation{ target:oil; property: "scale"; to: 0; duration: 300}
+    NumberAnimation{ target:oil; property: "visible"; to: 1; duration: 100}
+    NumberAnimation{ target:low_oil; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:low_oil; property: "x"; to: 580; duration: 10}
+    NumberAnimation{ target:low_oil; property: "y"; to: 230; duration: 10}
+    //NumberAnimation{target: low_oil; property:  "z"; to: 0; duration: 10}
+    NumberAnimation{ target:low_oil; property: "scale"; to: 0.8; duration: 10}
+    NumberAnimation{ target:low_oil; property: "opacity"; to: 1; duration: 10}
+    NumberAnimation{ target:oil; property: "scale"; to: 1.5; duration: 2000}
+    ParallelAnimation{
+        NumberAnimation {target:low_oil; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
+    }
+    NumberAnimation{ target:oil; property: "scale"; to: 0; duration: 2000}
+    NumberAnimation{ target:low_oil; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:low_oil; property: "x"; to: 540; duration: 10}
+    NumberAnimation{ target:low_oil; property: "y"; to: 92; duration: 10}
+    NumberAnimation{target: low_oil; property:  "scale"; to:0.45; duration: 10}
+    NumberAnimation{ target:oil; property: "visible"; to: 0; duration: 100}
+
+
+    NumberAnimation{ target:battery; property: "scale"; to: 0; duration: 300}
+    NumberAnimation{ target:battery; property: "visible"; to: 1; duration: 100}
+    NumberAnimation{ target:battery_low; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:battery_low; property: "x"; to: 615; duration: 10}
+    NumberAnimation{ target:battery_low; property: "y"; to: 220; duration: 10}
+    //NumberAnimation{target: battery_low; property:  "z"; to: 0; duration: 10}
+    NumberAnimation{ target:battery_low; property: "scale"; to: 0.8; duration: 10}
+    NumberAnimation{ target:battery_low; property: "opacity"; to: 1; duration: 10}
+    NumberAnimation{ target:battery; property: "scale"; to: 1.5; duration: 2000}
+    ParallelAnimation{
+        NumberAnimation {target:battery_low; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
+    }
+    NumberAnimation{ target:battery; property: "scale"; to: 0; duration: 2000}
+    NumberAnimation{ target:battery_low; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:battery_low; property: "x"; to: 820; duration: 10}
+    NumberAnimation{ target:battery_low; property: "y"; to: 60; duration: 10}
+    NumberAnimation{target: battery_low; property:  "scale"; to: 0.4; duration: 10}
+    NumberAnimation{ target:battery; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{target: skin_9_car; property: "scale"; to: 0.05; duration: 2000}
+    NumberAnimation{target: skin_9_car; property: "opacity"; to: 0; duration: 200}
+    NumberAnimation{target: digitalSpeed; property: "opacity"; to:switch(cluster.configurableBackground_index){case 9:1;break;default:0;} duration: 100}
+    NumberAnimation{target: display_gear; property: "opacity"; to: 1; duration: 100}
+    NumberAnimation{target: gear_image; property: "opacity"; to: 1; duration: 100}
+
+    NumberAnimation{ target:fuelLeak; property: "scale"; to: 0; duration: 300}
+    NumberAnimation{ target:fuelLeak; property: "visible"; to: 1; duration: 100}
+    NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "x"; to: 600; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "y"; to: 205; duration: 10}
+    //NumberAnimation{target: petrol_indicator; property:  "z"; to: 0; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "scale"; to: 0.6; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 1; duration: 10}
+    NumberAnimation{ target:fuelLeak; property: "scale"; to: 1.5; duration: 2000}
+    ParallelAnimation{
+        NumberAnimation {target:petrol_indicator; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
+    }
+    NumberAnimation{ target:fuelLeak; property: "scale"; to: 0; duration: 2000}
+    NumberAnimation{ target:petrol_indicator; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "x"; to: 740; duration: 10}
+    NumberAnimation{ target:petrol_indicator; property: "y"; to: 38; duration: 10}
+    NumberAnimation{target: petrol_indicator; property:  "scale"; to: 0.3; duration: 10}
+    NumberAnimation{ target:fuelLeak; property: "visible"; to: 0; duration: 100}
+
+
+    NumberAnimation{ target:parkinglight; property: "scale"; to: 0; duration: 300}
+    NumberAnimation{ target:parkinglight; property: "visible"; to: 1; duration: 100}
+    NumberAnimation{ target:parking_light; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:parking_light; property: "x"; to: 580; duration: 10}
+    NumberAnimation{ target:parking_light; property: "y"; to: 223; duration: 10}
+    //NumberAnimation{ target:parking_light; property:  "z"; to: 0; duration: 10}
+    NumberAnimation{ target:parking_light; property: "scale"; to: 0.8; duration: 10}
+    NumberAnimation{ target:parking_light; property: "opacity"; to: 1; duration: 10}
+    NumberAnimation{ target:parkinglight; property: "scale"; to: 1.5; duration: 2000}
+    ParallelAnimation{
+        NumberAnimation {target:parking_light; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
+    }
+    NumberAnimation{ target:parkinglight; property: "scale"; to: 0; duration: 2000}
+    NumberAnimation{ target:parking_light; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:parking_light; property: "x"; to: 540; duration: 10}
+    NumberAnimation{ target:parking_light; property: "y"; to: 92; duration: 10}
+    NumberAnimation{ target:parking_light; property:  "scale"; to:0.45; duration: 10}
+    NumberAnimation{ target:parkinglight; property: "visible"; to: 0; duration: 100}
+
+    NumberAnimation{ target:brake; property: "scale"; to: 0; duration: 300}
+    NumberAnimation{ target:brake; property: "visible"; to: 1; duration: 100}
+    NumberAnimation{ target:brakefailure; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "x"; to: 600; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "y"; to: 240; duration: 10}
+    //NumberAnimation{ target:brakefailure; property:  "z"; to: 0; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "scale"; to: 1.4; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "opacity"; to: 1; duration: 10}
+    NumberAnimation{ target:brake; property: "scale"; to: 1.5; duration: 2000}
+    ParallelAnimation{
+        NumberAnimation {target:brakefailure; property: "opacity";from: 0.1; to: 1.0 ;loops: 15 }
+    }
+    NumberAnimation{ target:brake; property: "scale"; to: 0; duration: 2000}
+    NumberAnimation{ target:brakefailure; property: "opacity"; to: 0; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "x"; to: 540; duration: 10}
+    NumberAnimation{ target:brakefailure; property: "y"; to: 92; duration: 10}
+    NumberAnimation{ target:brakefailure; property:  "scale"; to:0.45; duration: 10}
+    NumberAnimation{ target:brake; property: "visible"; to: 0; duration: 100}
+
+
+
+    //NumberAnimation{ target:turnright; property: "visible"; to: 1; duration: 100}
+
+    ParallelAnimation{
+        id:indicator
+        NumberAnimation{ target:turnright; property: "visible"; to: 1; duration: 10}
+        NumberAnimation {target:turn_right; property: "opacity";from: 0.1; to: 1.0 ;loops: 30 }
+
+    }
+
+    NumberAnimation{ target:turnright; property: "visible"; to: 0; duration: 10}
+    NumberAnimation {target:turn_right; property: "opacity";to: 0 ;loops: 30 }
+
+
+    //NumberAnimation{ target:turnleft; property: "visible"; to: 1; duration: 100}
+    ParallelAnimation{
+        id:indicator1
+        NumberAnimation{ target:turnleft; property: "visible"; to: 1; duration: 300}
+        NumberAnimation {target:turn_left; property: "opacity";from: 0.1; to: 1.0 ;loops: 30 }
+    }
+
+    NumberAnimation{ target:turnleft; property: "visible"; to: 0; duration: 300}
+    NumberAnimation {target:turn_left; property: "opacity";to: 0 ;loops: 30 }
+
+}
+
+
+
+
+
+}
 }
 

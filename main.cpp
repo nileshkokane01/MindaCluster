@@ -28,12 +28,11 @@ int main(int argc, char *argv[])
     QQmlContext *ctxt1 =engine.rootContext();
     ctxt1->setContextProperty("myMenu", QVariant::fromValue(dataList1));
 
-
+/*
     QApplication a(argc, argv);
     SerialLog w;
     engine.rootContext()->setContextProperty("w", &w);
-    w.show();
-
+    w.show();*/
 
 
     engine.load(QUrl(QStringLiteral("qrc:///main.qml")));

@@ -2,6 +2,7 @@ TEMPLATE = app
 
 QT += qml quick serialport widgets
 
+
 SOURCES += main.cpp \
     circleprogress.cpp \
     console.cpp \
