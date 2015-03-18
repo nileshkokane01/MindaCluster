@@ -85,7 +85,7 @@ Item{
             Rectangle{
                 id: rectMonth
                 width: parent.width/3+10
-                height: childrenRect.height
+                height:15// childrenRect.height
                 color: "#a777e6"
                 border.color: {
                     if (tabSelect===false)
@@ -127,7 +127,7 @@ Item{
             Rectangle{
                 id: rectyear
                 width: parent.width/6
-                height: childrenRect.height
+                height: 15//childrenRect.height
                 color: "#a777e6"
                 border.color: {
                     if (tabSelect===true)
@@ -260,7 +260,7 @@ Item{
             x:7
 
             width: parent.width/2
-            height: childrenRect.height
+            height: 15//childrenRect.height
             anchors.top: dateLabels.bottom
             //                        anchors.left: calender.left
             anchors.topMargin: 22
@@ -283,7 +283,7 @@ Item{
             id: rectTime
             x:162
             width: parent.width/4+15
-            height: childrenRect.height
+            height: 15//childrenRect.height
             anchors.top: dateLabels.bottom
             //                        anchors.left: calender.left
             anchors.topMargin: 22

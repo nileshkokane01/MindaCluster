@@ -1579,7 +1579,7 @@ ApplicationWindow {
             State{
                 name: "parseCalender"
                 when:viewCalendaroption.activeFocus
-                PropertyChanges {target:viewCalendaroption; x:500; y:100} //x:425
+                PropertyChanges {target:viewCalendaroption; scale:1.2} //x:425x:500; y:100
             },
 
             State {
@@ -1592,7 +1592,9 @@ ApplicationWindow {
 
 
         transitions: Transition {
-            NumberAnimation { properties: "x"; duration: 600; easing.type: Easing.OutQuint }
+             NumberAnimation { properties: "x"; duration: 600; easing.type: Easing.InExpo }
+             NumberAnimation { easing.amplitude: 0.8; properties: "y"; duration: 1200; easing.type: Easing.InElastic }
+             NumberAnimation { properties: "scale"; duration: 1200; easing.type: Easing.InCubic }
         }
 
 
@@ -1742,7 +1744,7 @@ ApplicationWindow {
 
             Listmenu {
                 id: listmenu
-                y:140; width: parent.width; height: parent.height ;anchors.margins:3
+                x:-1300;y:140; width: parent.width; height: parent.height ;anchors.margins:3
                 opacity:0
 
             }
@@ -1765,10 +1767,10 @@ ApplicationWindow {
 
 
             CalendarView {
-                id:viewCalendaroption;x:1800
+                id:viewCalendaroption;scale:0;x:500; y:100
             }
             SetDateTimeView {
-                id:viewDateTimeoption;x:1500;y:100;z:3   //anchors.centerIn: parent
+                id:viewDateTimeoption; x:565;y:-200;z:3   //anchors.centerIn: parent
             }
 
 

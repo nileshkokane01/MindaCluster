@@ -18,7 +18,7 @@ Item{
             id:dateSet
             //            anchors.centerIn: dateTimeRec
             x:10; y:3
-            width: dateTimeRec.width - 20; height: childrenRect.height//dateTimeRec.height - 130
+            width: dateTimeRec.width - 20; height:30 //childrenRect.height//dateTimeRec.height - 130
             anchors.leftMargin: 3; border.color: "#d1571a";
             color: "#6fbb84"; antialiasing: true; radius: 9
             opacity:1
@@ -41,7 +41,8 @@ Item{
             //anchors.centerIn: dateTimeRec.horizontalCenter
             x:10;
             y:78
-            width: dateTimeRec.width - 20; height: childrenRect.height//dateTimeRec.height - 130
+            width: dateTimeRec.width - 20; height:50 //childrenRect.height//dateTimeRec.height -
+
             anchors.leftMargin: 3; border.color: "#d1571a"
             color: "#6fbb84"; antialiasing: true; radius: 9
             opacity:1
@@ -56,6 +57,7 @@ Item{
                 text: qsTr("TIME")
                 opacity:1
             }
+
         }
         Rectangle {
             id:smallHighlighter
