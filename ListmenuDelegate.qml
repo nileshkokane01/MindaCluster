@@ -42,14 +42,18 @@ Item {
              viewCalendaroption.focus=true
              break;
          case 4:
+             cluster.navigation_step=2
              break;
          case 5:
+             cluster.navigation_step=2
              break;
          case 6:
              cluster.dummySerialselect=false
+             cluster.navigation_step=2
              break;
          case 7:
              cluster.dummySerialselect=true
+             cluster.navigation_step=2
              break;
          }
         }

@@ -9,7 +9,7 @@ ApplicationWindow {
     visible: true
     width: 1280
     height: 480
-    //    visibility:Window.FullScreen
+    visibility:Window.FullScreen
 
     Rectangle {
         id: cluster
