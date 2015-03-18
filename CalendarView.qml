@@ -337,7 +337,7 @@ Item{
             }
 
         }
-        if (event.key === Qt.Key_Up) {
+        if (event.key === Qt.Key_Down) {
             if(++tabSelect>4)
                 tabSelect=1
             switch(tabSelect)

@@ -742,7 +742,7 @@ moc_circleprogress.cpp: ../Qt5.3.1/5.3/gcc/include/QtQuick/QQuickPaintedItem \
 		../Qt5.3.1/5.3/gcc/include/QtGui/qfontmetrics.h \
 		../Qt5.3.1/5.3/gcc/include/QtCore/qmath.h \
 		circleprogress.h
-	/home/minda/Qt5.3.1/5.3/gcc/bin/moc $(DEFINES) -I/home/minda/Qt5.3.1/5.3/gcc/mkspecs/linux-g++ -I/home/minda/Switesh-Fulpagare-FCD-1 -I/home/minda/Qt5.3.1/5.3/gcc/include -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQuick -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQml -I/home/minda/Qt5.3.1/5.3/gcc/include/QtWidgets -I/home/minda/Qt5.3.1/5.3/gcc/include/QtSerialPort -I/home/minda/Qt5.3.1/5.3/gcc/include/QtNetwork -I/home/minda/Qt5.3.1/5.3/gcc/include/QtGui -I/home/minda/Qt5.3.1/5.3/gcc/include/QtCore circleprogress.h -o moc_circleprogress.cpp
+	/home/minda/Qt5.3.1/5.3/gcc/bin/moc $(DEFINES) -I/home/minda/Qt5.3.1/5.3/gcc/mkspecs/linux-g++ -I/home/minda/nileshkokane01-MindaCluster -I/home/minda/Qt5.3.1/5.3/gcc/include -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQuick -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQml -I/home/minda/Qt5.3.1/5.3/gcc/include/QtWidgets -I/home/minda/Qt5.3.1/5.3/gcc/include/QtSerialPort -I/home/minda/Qt5.3.1/5.3/gcc/include/QtNetwork -I/home/minda/Qt5.3.1/5.3/gcc/include/QtGui -I/home/minda/Qt5.3.1/5.3/gcc/include/QtCore circleprogress.h -o moc_circleprogress.cpp
 
 moc_serial.cpp: ../Qt5.3.1/5.3/gcc/include/QtWidgets/QMainWindow \
 		../Qt5.3.1/5.3/gcc/include/QtWidgets/qmainwindow.h \
@@ -853,7 +853,7 @@ moc_serial.cpp: ../Qt5.3.1/5.3/gcc/include/QtWidgets/QMainWindow \
 		../Qt5.3.1/5.3/gcc/include/QtWidgets/QDialog \
 		../Qt5.3.1/5.3/gcc/include/QtWidgets/qdialog.h \
 		serial.h
-	/home/minda/Qt5.3.1/5.3/gcc/bin/moc $(DEFINES) -I/home/minda/Qt5.3.1/5.3/gcc/mkspecs/linux-g++ -I/home/minda/Switesh-Fulpagare-FCD-1 -I/home/minda/Qt5.3.1/5.3/gcc/include -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQuick -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQml -I/home/minda/Qt5.3.1/5.3/gcc/include/QtWidgets -I/home/minda/Qt5.3.1/5.3/gcc/include/QtSerialPort -I/home/minda/Qt5.3.1/5.3/gcc/include/QtNetwork -I/home/minda/Qt5.3.1/5.3/gcc/include/QtGui -I/home/minda/Qt5.3.1/5.3/gcc/include/QtCore serial.h -o moc_serial.cpp
+	/home/minda/Qt5.3.1/5.3/gcc/bin/moc $(DEFINES) -I/home/minda/Qt5.3.1/5.3/gcc/mkspecs/linux-g++ -I/home/minda/nileshkokane01-MindaCluster -I/home/minda/Qt5.3.1/5.3/gcc/include -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQuick -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQml -I/home/minda/Qt5.3.1/5.3/gcc/include/QtWidgets -I/home/minda/Qt5.3.1/5.3/gcc/include/QtSerialPort -I/home/minda/Qt5.3.1/5.3/gcc/include/QtNetwork -I/home/minda/Qt5.3.1/5.3/gcc/include/QtGui -I/home/minda/Qt5.3.1/5.3/gcc/include/QtCore serial.h -o moc_serial.cpp
 
 moc_console.cpp: ../Qt5.3.1/5.3/gcc/include/QtWidgets/QPlainTextEdit \
 		../Qt5.3.1/5.3/gcc/include/QtWidgets/qplaintextedit.h \
@@ -970,7 +970,7 @@ moc_console.cpp: ../Qt5.3.1/5.3/gcc/include/QtWidgets/QPlainTextEdit \
 		../Qt5.3.1/5.3/gcc/include/QtGui/qrawfont.h \
 		../Qt5.3.1/5.3/gcc/include/QtGui/qfontdatabase.h \
 		console.h
-	/home/minda/Qt5.3.1/5.3/gcc/bin/moc $(DEFINES) -I/home/minda/Qt5.3.1/5.3/gcc/mkspecs/linux-g++ -I/home/minda/Switesh-Fulpagare-FCD-1 -I/home/minda/Qt5.3.1/5.3/gcc/include -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQuick -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQml -I/home/minda/Qt5.3.1/5.3/gcc/include/QtWidgets -I/home/minda/Qt5.3.1/5.3/gcc/include/QtSerialPort -I/home/minda/Qt5.3.1/5.3/gcc/include/QtNetwork -I/home/minda/Qt5.3.1/5.3/gcc/include/QtGui -I/home/minda/Qt5.3.1/5.3/gcc/include/QtCore console.h -o moc_console.cpp
+	/home/minda/Qt5.3.1/5.3/gcc/bin/moc $(DEFINES) -I/home/minda/Qt5.3.1/5.3/gcc/mkspecs/linux-g++ -I/home/minda/nileshkokane01-MindaCluster -I/home/minda/Qt5.3.1/5.3/gcc/include -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQuick -I/home/minda/Qt5.3.1/5.3/gcc/include/QtQml -I/home/minda/Qt5.3.1/5.3/gcc/include/QtWidgets -I/home/minda/Qt5.3.1/5.3/gcc/include/QtSerialPort -I/home/minda/Qt5.3.1/5.3/gcc/include/QtNetwork -I/home/minda/Qt5.3.1/5.3/gcc/include/QtGui -I/home/minda/Qt5.3.1/5.3/gcc/include/QtCore console.h -o moc_console.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
