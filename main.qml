@@ -65,7 +65,7 @@ ApplicationWindow {
         property string skin_9_configurablePointer:"image/Skin_9_RPM_Pointer1.png"
         property string skin_12_configurablePointer:"image/Skin_9_RPM_Pointer1.png"
         property int skin_12_configurablePointer_index:1
-        property int configurableBackground_index: 9
+        property int configurableBackground_index: 3
         property bool dummySerialselect:true
 
 
