@@ -109,7 +109,7 @@ Item{
         }
 
 
-        if (event.key === Qt.Key_Up) {
+        if (event.key === Qt.Key_Down) {
             if(++cal.selectTAB>6)
                 cal.selectTAB=1;
 
